@@ -1,48 +1,43 @@
 import React from "react";
-import { Button, Center, Card, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
-import { logout } from "../../apis/login";
-import { toaster } from "../../components/ui/toaster";
 import logo from "../../assets/logo.png";
-
 export const HomeView = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    toaster.success({
-      title: "Logout realizado com sucesso",
-      description: "Você foi deslogado com sucesso!",
-    });
-    navigate("/login");
-  };
-
   return (
-    <Center w="100%" h="100vh">
-      <Card.Root width="520px">
-        <Card.Body gap="4">
-          <Center w="100%">
-            <img src={logo} style={{ width: "100px", objectFit: "cover" }} />
-          </Center>
+    <Box w="100%" minH="100vh" bgGradient="linear(to-b, white, blue.50)">
+      {/* Header */}
+      <Flex justify="space-between" align="center" px={8} py={4}>
+        <Flex align="center">
+          <Image src={logo} alt="Logo" boxSize="30px" mr={2} />
+          <Text fontWeight="bold" fontSize="xl">StockPro</Text>
+        </Flex>
+        <Flex gap={4}>
+          <Button variant="ghost" onClick={() => navigate("/login")}>Entrar</Button>
+          <Button colorScheme="blue" onClick={() => navigate("/register")}>Cadastrar-se</Button>
+        </Flex>
+      </Flex>
 
-          <Card.Title>Bem-vindo!</Card.Title>
-
-          <Text textAlign="center" color="gray.600">
-            Você está logado com sucesso!
+      {/* Main Content */}
+      <Center mt={20} px={4}>
+        <Stack spacing={6} align="center" textAlign="center" maxW="600px">
+          <Heading as="h1" size="2xl">
+            Gestão de Estoque <Text as="span" color="blue.500">Inteligente</Text>
+          </Heading>
+          <Text fontSize="lg" color="gray.600">
+            Sistema completo para gerenciar seu mini mercado com segurança, controle de vendas e estoque em tempo real.
           </Text>
-        </Card.Body>
-
-        <Card.Footer flex flexDirection={"column"} gap="2">
-          <Button
-            onClick={handleLogout}
-            width={"100%"}
-            colorScheme="red"
-            variant="outline"
-          >
-            Logout
-          </Button>
-        </Card.Footer>
-      </Card.Root>
-    </Center>
+          <Flex gap={4}>
+            <Button colorScheme="blue" onClick={() => navigate("/dashboard")}>
+              Começar Agora
+            </Button>
+            <Button variant="outline" onClick={() => navigate("/demo")}>
+              Ver Demo
+            </Button>
+          </Flex>
+        </Stack>
+      </Center>
+    </Box>
   );
 };

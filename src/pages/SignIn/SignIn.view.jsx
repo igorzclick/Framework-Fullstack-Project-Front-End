@@ -1,35 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Avatar,
+  Box,
   Button,
-  Card,
+  Center,
+  Flex,
+  Heading,
   Input,
   Stack,
-  Center,
-  Toast,
-  Field,
   Text,
+  Link as ChakraLink,
+  Field
 } from '@chakra-ui/react';
 import { loginPlayer, isAuthenticated } from '../../apis/login';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '../../components/ui/toaster';
-import { Link as ChakraLink } from '@chakra-ui/react';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo_stock_pro.png';
 
 export const SignInView = () => {
   const [formData, setFormData] = useState({
-    nickname: '',
+    email: '',
     password: '',
   });
-  const [errors, setErrors] = useState({
-    nickname: '',
-    password: '',
-  });
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // redireciona se tiver autenticado
   useEffect(() => {
     if (isAuthenticated()) {
       navigate('/');
@@ -38,22 +34,19 @@ export const SignInView = () => {
 
   const validateForm = () => {
     let errors = {};
-    if (!formData.nickname) {
-      errors.nickname = 'Nickname é obrigatório';
+    if (!formData.email) {
+      errors.email = 'E-mail é obrigatório';
     }
     if (!formData.password) {
       errors.password = 'Senha é obrigatória';
-    } else if (formData.password.length < 6) {
-      errors.password = 'Senha deve ter pelo menos 6 caracteres';
     }
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleLogin = async () => {
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
+
     setIsLoading(true);
     try {
       const data = await loginPlayer({ ...formData });
@@ -75,68 +68,116 @@ export const SignInView = () => {
   };
 
   return (
-    <Center w='100%' h='100vh'>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleLogin();
-        }}>
-        <Card.Root width='520px'>
-          <Card.Body gap='4'>
-            <Center w='100%'>
-              <img src={logo} style={{ width: '100px', objectFit: 'cover' }} />
-            </Center>
-
-            <Card.Title>Login</Card.Title>
-
-            <Stack gap='2'>
-              <Field.Root invalid={!!errors.nickname}>
-                <Field.Label>Nickname</Field.Label>
-                <Input
-                  placeholder='Insira seu nickname'
-                  onChange={(e) => {
-                    setErrors({ ...errors, nickname: '' });
-                    setFormData({ ...formData, nickname: e.target.value });
-                  }}
-                />
-                {errors.nickname && (
-                  <Field.ErrorText>{errors.nickname}</Field.ErrorText>
-                )}
-              </Field.Root>
-              <Field.Root invalid={!!errors.password}>
-                <Field.Label>Senha</Field.Label>
-                <Input
-                  placeholder='Insira sua senha'
-                  type='password'
-                  onChange={(e) => {
-                    setErrors({ ...errors, password: '' });
-                    setFormData({ ...formData, password: e.target.value });
-                  }}
-                />
-                {errors.password && (
-                  <Field.ErrorText>{errors.password}</Field.ErrorText>
-                )}
-              </Field.Root>
-            </Stack>
-            <Text>
-              Ainda não possui uma conta?{' '}
-              <ChakraLink asChild>
-                <Link to='/register'>Crie uma conta aqui</Link>
-              </ChakraLink>
+    <Box
+      minH="100vh"
+      bgGradient="linear(to-b, blue.50, white)"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      p={4}
+    >
+      <Box
+        bg="white"
+        p={10}
+        rounded="lg"
+        boxShadow="xl"
+        maxW="md"
+        w="100%"
+      >
+        <Center mb={8} flexDirection="column" gap={3}>
+          <Flex align="center" gap={3}>
+            <img src={logo} alt="Logo StockPro" style={{ width: 30, height: 30 }} />
+            <Text fontSize="2xl" fontWeight="bold" color="blue.600">
+              StockPro
             </Text>
-          </Card.Body>
+          </Flex>
+        </Center>
 
-          <Card.Footer flex flexDirection={'column'} gap='2'>
+        <Heading mb={2} fontSize="2xl" textAlign="center" color="gray.700">
+          Fazer Login
+        </Heading>
+        <Text mb={6} fontSize="sm" color="gray.500" textAlign="center">
+          Entre na sua conta para gerenciar seu mercado
+        </Text>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+        >
+          <Stack spacing={4}>
+
+            {/* Campo Email */}
+            <Field.Root invalid={Boolean(errors.email)}>
+              <Field.Label>Email</Field.Label>
+              <Input
+                type="email"
+                placeholder="seu@email.com"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                focusBorderColor="blue.500"
+              />
+              {errors.email && <Field.ErrorText>{errors.email}</Field.ErrorText>}
+            </Field.Root>
+
+            {/* Campo Senha */}
+            <Field.Root invalid={Boolean(errors.password)}>
+              <Field.Label>Senha</Field.Label>
+              <Input
+                type="password"
+                placeholder="******"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                focusBorderColor="blue.500"
+              />
+              {errors.password && <Field.ErrorText>{errors.password}</Field.ErrorText>}
+            </Field.Root>
+
             <Button
-              type='submit'
-              width={'100%'}
+              type="submit"
+              colorScheme="blue"
               isLoading={isLoading}
-              disabled={isLoading}>
+              size="lg"
+              fontWeight="bold"
+              borderRadius="md"
+            >
               Entrar
             </Button>
-          </Card.Footer>
-        </Card.Root>
-      </form>
-    </Center>
+
+            <Center>
+              <ChakraLink
+                as={Link}
+                to="/recuperar-senha"
+                fontSize="sm"
+                color="blue.500"
+                _hover={{ textDecoration: 'underline' }}
+              >
+                Esqueceu sua senha?
+              </ChakraLink>
+            </Center>
+
+            <Center fontSize="sm" color="gray.600">
+              Não tem uma conta?{' '}
+              <ChakraLink
+                as={Link}
+                to="/cadastro"
+                color="blue.500"
+                fontWeight="semibold"
+                ml={1}
+                _hover={{ textDecoration: 'underline' }}
+              >
+                Cadastre-se
+              </ChakraLink>
+            </Center>
+
+          </Stack>
+        </form>
+      </Box>
+    </Box>
   );
 };

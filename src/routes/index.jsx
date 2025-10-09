@@ -6,7 +6,7 @@ import { PrivateRouteProvider } from "./components/PrivateRouteProvider";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/home",
     element: (
       <PrivateRouteProvider>
         <HomeView />
@@ -14,11 +14,11 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/login",
+    path: "/auth/login",
     element: <SignInView />,
   },
   {
-    path: "/register",
+    path: "/seller/register",
     element: <SignUpView />,
   },
 ]);
