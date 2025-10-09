@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, Center, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo_stock_pro.png";
 export const HomeView = () => {
   const navigate = useNavigate();
 
@@ -14,8 +14,8 @@ export const HomeView = () => {
           <Text fontWeight="bold" fontSize="xl">StockPro</Text>
         </Flex>
         <Flex gap={4}>
-          <Button variant="ghost" onClick={() => navigate("/login")}>Entrar</Button>
-          <Button colorScheme="blue" onClick={() => navigate("/register")}>Cadastrar-se</Button>
+          <Button variant="ghost" onClick={() => navigate("/auth/login")}>Entrar</Button>
+          <Button colorScheme="blue" onClick={() => navigate("/seller/register")}>Cadastrar-se</Button>
         </Flex>
       </Flex>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo_stock_pro.png';
 import {
   Avatar,
   Button,
@@ -94,7 +94,7 @@ export const SignUpView = () => {
 
   return (
     <Center w='100%' h='100vh' my='10'>
-      <Card.Root width='520px'>
+      <Card.Root width='520px' >
         <form
           onSubmit={(e) => {
             e.preventDefault();
