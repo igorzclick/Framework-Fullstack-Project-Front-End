@@ -165,7 +165,7 @@ export const SignInView = () => {
               Não tem uma conta?{' '}
               <ChakraLink
                 as={Link}
-                to="/cadastro"
+                to="/seller/register"
                 color="blue.500"
                 fontWeight="semibold"
                 ml={1}

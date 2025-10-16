@@ -173,7 +173,7 @@ export const SignUpView = () => {
             <Text>
               Ja possui uma conta?{' '}
               <ChakraLink asChild>
-                <Link to='/login'>Entrar</Link>
+                <Link to='/auth/login'>Entrar</Link>
               </ChakraLink>
             </Text>
           </Card.Body>
