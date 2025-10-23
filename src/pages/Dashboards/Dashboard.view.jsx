@@ -1,5 +1,6 @@
 import React from "react";
-import {useColorModeValue} from "../../../src/components/ui/color-mode";
+import { useColorModeValue } from "../../components/ui/color-mode";
+import { Sidebar } from "../../components/layout/Sidebar";
 import {
   Box,
   Flex,
@@ -10,15 +11,18 @@ import {
   Badge,
   Progress,
   IconButton,
+  HStack,
+  
 
 } from "@chakra-ui/react";
 import { FiTrendingUp, FiTrendingDown, FiPlus, FiShoppingCart } from "react-icons/fi";
 
-export const Dashboard = () => {
+export const DashboardView = () => {
   const green = "green.500";
   const red = "red.500";
   const blue = "blue.500";
-  const grayLight = useColorModeValue("gray.100", "gray.700");
+  // const grayLight = useColorModeValue("gray.100", "gray.700");
+  // console.log(grayLight)
 
   return (
     <Box p={6} bg="white" rounded="md" shadow="md" minH="100vh">
@@ -92,11 +96,11 @@ export const Dashboard = () => {
           borderWidth="1px"
           borderRadius="md"
           p={4}
-          bg={grayLight}
+          // bg={grayLight}
         >
           <Flex align="center" mb={2}>
             <Badge colorScheme="yellow" mr={2}>
-              ⚠️
+              "⚠️"
             </Badge>
             <Text fontWeight="bold">Alertas de Estoque</Text>
           </Flex>
@@ -113,7 +117,15 @@ export const Dashboard = () => {
             <Text fontSize="sm" color="gray.500">
               Atual: 0 - Mínimo: 5
             </Text>
-            <Progress value={0} size="sm" colorScheme="red" />
+            <Progress.Root defaultValue={0} maxW="sm">
+              <HStack gap="5">
+                <Progress.Label>Usage</Progress.Label>
+                <Progress.Track flex="1">
+                  <Progress.Range />
+                </Progress.Track>
+                <Progress.ValueText>40%</Progress.ValueText>
+              </HStack>
+            </Progress.Root>
           </Box>
 
           {/* Leite Integral 1L */}
@@ -125,7 +137,15 @@ export const Dashboard = () => {
             <Text fontSize="sm" color="gray.500">
               Atual: 3 - Mínimo: 10
             </Text>
-            <Progress value={(3 / 10) * 100} size="sm" colorScheme="yellow" />
+            <Progress.Root defaultValue={(3 / 10) * 100} maxW="sm">
+              <HStack gap="5">
+                <Progress.Label>Usage</Progress.Label>
+                <Progress.Track flex="1">
+                  <Progress.Range />
+                </Progress.Track>
+                <Progress.ValueText>40%</Progress.ValueText>
+              </HStack>
+            </Progress.Root>
           </Box>
 
           {/* Açúcar 1kg */}
@@ -137,7 +157,15 @@ export const Dashboard = () => {
             <Text fontSize="sm" color="gray.500">
               Atual: 5 - Mínimo: 15
             </Text>
-            <Progress value={(5 / 15) * 100} size="sm" colorScheme="yellow" />
+            <Progress.Root defaultValue={(5 / 15) * 100} maxW="sm">
+              <HStack gap="5">
+                <Progress.Label>Usage</Progress.Label>
+                <Progress.Track flex="1">
+                  <Progress.Range />
+                </Progress.Track>
+                <Progress.ValueText>40%</Progress.ValueText>
+              </HStack>
+            </Progress.Root>
           </Box>
         </Box>
 
@@ -148,7 +176,7 @@ export const Dashboard = () => {
           borderWidth="1px"
           borderRadius="md"
           p={4}
-          bg={grayLight}
+          // bg={grayLight}
         >
           <Flex align="center" mb={4} justify="space-between">
             <Text fontWeight="bold">Top Produtos</Text>
@@ -210,7 +238,7 @@ export const Dashboard = () => {
           borderWidth="1px"
           borderRadius="md"
           p={4}
-          bg={grayLight}
+          // bg={grayLight}
         >
           <Flex align="center" mb={4} justify="space-between">
             <Text fontWeight="bold">Resumo de Vendas</Text>
@@ -235,7 +263,7 @@ export const Dashboard = () => {
               <Text>Ticket Médio</Text>
               <Text>R$ 101,70</Text>
             </Flex>
-            <Box height="1px" bg="gray.200" my={3} />
+            {/* <Box height="1px" bg="gray.200" my={3} /> */}
 
           </Box>
 
@@ -255,7 +283,7 @@ export const Dashboard = () => {
               <Text>Ticket Médio</Text>
               <Text>R$ 98,27</Text>
             </Flex>
-            <Box height="1px" bg="gray.200" my={3} />
+            {/* <Box height="1px" bg="gray.200" my={3} /> */}
 
           </Box>
 
@@ -279,5 +307,6 @@ export const Dashboard = () => {
         </Box>
       </Flex>
     </Box>
+    
   );
 };

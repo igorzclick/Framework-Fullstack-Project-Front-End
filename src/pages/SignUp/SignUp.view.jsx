@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import logo from '../../assets/logo_stock_pro.png';
+import logo from '../../assets/logo_editada.png';
 import {
   Avatar,
   Button,
@@ -102,7 +102,7 @@ export const SignUpView = () => {
           }}>
           <Card.Body gap='2'>
             <Center w='100%'>
-              <img src={logo} style={{ width: '100px', objectFit: 'cover' }} />
+              <img src={logo} style={{ width: '100px', objectFit: 'cover',   height:'40px'}} />
             </Center>
 
             <Card.Title>Cadastro de usuário</Card.Title>

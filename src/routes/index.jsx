@@ -1,9 +1,10 @@
 import { SignInView } from "../pages/SignIn/SignIn.view";
 import { SignUpView } from "../pages/SignUp/SignUp.view";
 import { HomeView } from "../pages/Home/Home.view";
-import { Dashboard } from "../pages/Dashboards/Dashboard.view";
+// import { DashboardView } from "../pages/Dashboards/Dashboard.view";
 import { createBrowserRouter } from "react-router";
 import { PrivateRouteProvider } from "./components/PrivateRouteProvider";
+import { DashboardPage } from "../pages/Dashboards/Dashboard.page";
 
 export const router = createBrowserRouter([
   
@@ -28,8 +29,16 @@ export const router = createBrowserRouter([
     path: "/dashboard", //rota ainda não existe, precisamos criar no back
     element: (
       <PrivateRouteProvider>
-        <Dashboard />
+        <DashboardPage/>
       </PrivateRouteProvider>
     ),
+  //   children: [{
+  //   path: "/sei",
+  //   element: (
+  //     <PrivateRouteProvider>
+  //       <HomeView />
+  //     </PrivateRouteProvider>
+  //   ),
+  // },]
   },
 ]);

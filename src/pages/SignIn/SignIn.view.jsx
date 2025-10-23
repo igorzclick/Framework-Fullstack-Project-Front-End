@@ -14,7 +14,7 @@ import {
 import { loginPlayer, isAuthenticated } from '../../apis/login';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '../../components/ui/toaster';
-import logo from '../../assets/logo_stock_pro.png';
+import logo from '../../assets/logo_editada.png';
 
 export const SignInView = () => {
   const [formData, setFormData] = useState({
@@ -86,10 +86,10 @@ export const SignInView = () => {
       >
         <Center mb={8} flexDirection="column" gap={3}>
           <Flex align="center" gap={3}>
-            <img src={logo} alt="Logo StockPro" style={{ width: 30, height: 30 }} />
-            <Text fontSize="2xl" fontWeight="bold" color="blue.600">
+            <img src={logo} alt="Logo StockPro" style={{ width: 250, height: 80 }} />
+            {/* <Text fontSize="2xl" fontWeight="bold" color="blue.600">
               StockPro
-            </Text>
+            </Text> */}
           </Flex>
         </Center>
 
@@ -140,11 +140,14 @@ export const SignInView = () => {
 
             <Button
               type="submit"
+              as={Link}
+              to='/dashboard'
               colorScheme="blue"
               isLoading={isLoading}
               size="lg"
               fontWeight="bold"
               borderRadius="md"
+              
             >
               Entrar
             </Button>
