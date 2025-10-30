@@ -5,6 +5,7 @@ import { HomeView } from "../pages/Home/Home.view";
 import { createBrowserRouter } from "react-router";
 import { PrivateRouteProvider } from "./components/PrivateRouteProvider";
 import { DashboardPage } from "../pages/Dashboards/Dashboard.page";
+import { ListProductsview } from "../pages/Products/ListProducts.view";
 
 export const router = createBrowserRouter([
   
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
   {
     path: "/seller/register",
     element: <SignUpView />,
+  },
+  {
+    path: "/Products",
+    element: <ListProductsview/>,
   },
    {
     path: "/dashboard", //rota ainda não existe, precisamos criar no back

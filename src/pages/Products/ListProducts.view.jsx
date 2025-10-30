@@ -1,28 +1,23 @@
 import React from "react";
-import { useColorModeValue } from "../../components/ui/color-mode";
-import { Sidebar } from "../../components/layout/Sidebar";
 import {
   Box,
   Flex,
-  Stack,
   Text,
   Heading,
   Button,
   Badge,
   Progress,
-  IconButton,
   HStack,
-  
-
 } from "@chakra-ui/react";
-import { FiTrendingUp, FiTrendingDown, FiPlus, FiShoppingCart } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
+import { useNavigate } from "react-router";
 
-export const DashboardView = () => {
+export const ListProductsview = () => {
+  const navigate = useNavigate();
+
   const green = "green.500";
   const red = "red.500";
   const blue = "blue.500";
-  // const grayLight = useColorModeValue("gray.100", "gray.700");
-  // console.log(grayLight)
 
   return (
     <Box p={6} bg="white" rounded="md" shadow="md" minH="100vh">
@@ -35,7 +30,11 @@ export const DashboardView = () => {
           Controle completo do seu mercado
         </Text>
         <Flex gap={2}>
-          <Button size="sm" variant="outline" onClick={() => navigate("/ListProduct")}Entrar>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => navigate("/ListProduct")}
+          >
             Produtos
           </Button>
           <Button size="sm" variant="outline">
@@ -96,7 +95,6 @@ export const DashboardView = () => {
           borderWidth="1px"
           borderRadius="md"
           p={4}
-          // bg={grayLight}
         >
           <Flex align="center" mb={2}>
             <Badge colorScheme="yellow" mr={2}>
@@ -107,7 +105,6 @@ export const DashboardView = () => {
             Produtos com estoque baixo ou em falta
           </Text>
 
-          {/* Pão de Açúcar */}
           <Box mb={4}>
             <Flex justify="space-between" mb={1}>
               <Text>Pão de Açúcar</Text>
@@ -117,17 +114,16 @@ export const DashboardView = () => {
               Atual: 0 - Mínimo: 5
             </Text>
             <Progress.Root defaultValue={0} maxW="sm">
-              <HStack gap="5">
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex="1">
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
+                          <HStack gap="5">
+                            <Progress.Label>Usage</Progress.Label>
+                            <Progress.Track flex="1">
+                              <Progress.Range />
+                            </Progress.Track>
+                            <Progress.ValueText>40%</Progress.ValueText>
+                          </HStack>
+                        </Progress.Root>
           </Box>
 
-          {/* Leite Integral 1L */}
           <Box mb={4}>
             <Flex justify="space-between" mb={1}>
               <Text>Leite Integral 1L</Text>
@@ -136,18 +132,18 @@ export const DashboardView = () => {
             <Text fontSize="sm" color="gray.500">
               Atual: 3 - Mínimo: 10
             </Text>
+
             <Progress.Root defaultValue={(3 / 10) * 100} maxW="sm">
-              <HStack gap="5">
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex="1">
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
+                          <HStack gap="5">
+                            <Progress.Label>Usage</Progress.Label>
+                            <Progress.Track flex="1">
+                              <Progress.Range />
+                            </Progress.Track>
+                            <Progress.ValueText>40%</Progress.ValueText>
+                          </HStack>
+                        </Progress.Root>
           </Box>
 
-          {/* Açúcar 1kg */}
           <Box>
             <Flex justify="space-between" mb={1}>
               <Text>Açúcar 1kg</Text>
@@ -156,15 +152,16 @@ export const DashboardView = () => {
             <Text fontSize="sm" color="gray.500">
               Atual: 5 - Mínimo: 15
             </Text>
-            <Progress.Root defaultValue={(5 / 15) * 100} maxW="sm">
-              <HStack gap="5">
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex="1">
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
+
+             <Progress.Root defaultValue={(5 / 15) * 100} maxW="sm">
+                          <HStack gap="5">
+                            <Progress.Label>Usage</Progress.Label>
+                            <Progress.Track flex="1">
+                              <Progress.Range />
+                            </Progress.Track>
+                            <Progress.ValueText>40%</Progress.ValueText>
+                          </HStack>
+                        </Progress.Root>
           </Box>
         </Box>
 
@@ -175,7 +172,6 @@ export const DashboardView = () => {
           borderWidth="1px"
           borderRadius="md"
           p={4}
-          // bg={grayLight}
         >
           <Flex align="center" mb={4} justify="space-between">
             <Text fontWeight="bold">Top Produtos</Text>
@@ -184,7 +180,6 @@ export const DashboardView = () => {
             </Text>
           </Flex>
 
-          {/* Produto 1 */}
           <Box mb={4}>
             <Flex justify="space-between" mb={1}>
               <Text fontWeight="semibold">Coca-Cola 2L</Text>
@@ -199,7 +194,6 @@ export const DashboardView = () => {
             </Flex>
           </Box>
 
-          {/* Produto 2 */}
           <Box mb={4}>
             <Flex justify="space-between" mb={1}>
               <Text fontWeight="semibold">Pão Francês</Text>
@@ -214,7 +208,6 @@ export const DashboardView = () => {
             </Flex>
           </Box>
 
-          {/* Produto 3 */}
           <Box>
             <Flex justify="space-between" mb={1}>
               <Text fontWeight="semibold">Leite Integral</Text>
@@ -237,7 +230,6 @@ export const DashboardView = () => {
           borderWidth="1px"
           borderRadius="md"
           p={4}
-          // bg={grayLight}
         >
           <Flex align="center" mb={4} justify="space-between">
             <Text fontWeight="bold">Resumo de Vendas</Text>
@@ -246,7 +238,6 @@ export const DashboardView = () => {
             </Text>
           </Flex>
 
-          {/* Hoje */}
           <Box mb={4}>
             <Flex justify="space-between" mb={1}>
               <Text>Hoje</Text>
@@ -262,50 +253,9 @@ export const DashboardView = () => {
               <Text>Ticket Médio</Text>
               <Text>R$ 101,70</Text>
             </Flex>
-            {/* <Box height="1px" bg="gray.200" my={3} /> */}
-
-          </Box>
-
-          {/* Ontem */}
-          <Box mb={4}>
-            <Flex justify="space-between" mb={1}>
-              <Text>Ontem</Text>
-              <Text fontSize="xs" color="gray.500">
-                25 vendas
-              </Text>
-            </Flex>
-            <Flex justify="space-between" fontWeight="semibold" mb={1}>
-              <Text>Receita</Text>
-              <Text color={green}>R$ 2.456,80</Text>
-            </Flex>
-            <Flex justify="space-between" fontSize="sm" color={blue}>
-              <Text>Ticket Médio</Text>
-              <Text>R$ 98,27</Text>
-            </Flex>
-            {/* <Box height="1px" bg="gray.200" my={3} /> */}
-
-          </Box>
-
-          {/* Esta Semana */}
-          <Box>
-            <Flex justify="space-between" mb={1}>
-              <Text>Esta Semana</Text>
-              <Text fontSize="xs" color="gray.500">
-                156 vendas
-              </Text>
-            </Flex>
-            <Flex justify="space-between" fontWeight="semibold" mb={1}>
-              <Text>Receita</Text>
-              <Text color={green}>R$ 15.890,30</Text>
-            </Flex>
-            <Flex justify="space-between" fontSize="sm" color={blue}>
-              <Text>Ticket Médio</Text>
-              <Text>R$ 101,86</Text>
-            </Flex>
           </Box>
         </Box>
       </Flex>
     </Box>
-    
   );
 };
