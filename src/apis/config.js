@@ -1,10 +1,12 @@
+// src/config.js
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL, 
+  // fallback caso a variável de ambiente não esteja configurada
 });
 
-// add token de autenticacao nas req
+// Intercepta todas as requisições e adiciona o token JWT (se existir)
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

@@ -11,7 +11,7 @@ import {
   Link as ChakraLink,
   Field
 } from '@chakra-ui/react';
-import { loginPlayer, isAuthenticated } from '../../apis/login';
+import { loginSeller, isAuthenticated } from '../../apis/login';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '../../components/ui/toaster';
 import logo from '../../assets/logo_editada.png';
@@ -28,7 +28,7 @@ export const SignInView = () => {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate('/');
+      navigate('/auth/login');
     }
   }, [navigate]);
 
@@ -49,7 +49,7 @@ export const SignInView = () => {
 
     setIsLoading(true);
     try {
-      const data = await loginPlayer({ ...formData });
+      const data = await loginSeller({ ...formData });
       localStorage.setItem('token', data.access_token);
       toaster.success({
         title: 'Login realizado com sucesso',
@@ -140,8 +140,8 @@ export const SignInView = () => {
 
             <Button
               type="submit"
-              as={Link}
-              to='/dashboard'
+              // as={Link}
+              // to='/dashboard'
               colorScheme="blue"
               isLoading={isLoading}
               size="lg"

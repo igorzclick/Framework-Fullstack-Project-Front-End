@@ -1,8 +1,8 @@
 import { api } from './config';
 
-export async function loginPlayer({ nickname, password }) {
+export async function loginSeller({ email, password }) {
   const response = await api.post('/auth/login', {
-    nickname,
+    email,
     password,
   });
   return response.data;

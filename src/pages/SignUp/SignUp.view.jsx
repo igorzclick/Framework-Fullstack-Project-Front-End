@@ -15,17 +15,22 @@ import { isAuthenticated } from '../../apis/login';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '../../components/ui/toaster';
 import { Link as ChakraLink } from '@chakra-ui/react';
-import { registerPlayer } from '../../apis/registerPlayer';
+import { registerSeller } from '../../apis/registerSeller';
 
 export const SignUpView = () => {
+
   const [formData, setFormData] = useState({
-    nickname: '',
+    name: '',
+    cnpj: '',
+    cellphone: '',
     email: '',
     password: '',
     passwordConfirm: '',
   });
   const [errors, setErrors] = useState({
-    nickname: '',
+    name: '',
+    cnpj: '',
+    cellphone: '',
     email: '',
     password: '',
     passwordConfirm: '',
@@ -36,14 +41,20 @@ export const SignUpView = () => {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate('/');
+      navigate('/seller/register');
     }
   }, [navigate]);
 
   const validateForm = () => {
     let errors = {};
-    if (!formData.nickname) {
-      errors.nickname = 'Nickname é obrigatório';
+    if (!formData.name) {
+      errors.name = 'Nome é obrigatório';
+    }
+    if (!formData.cnpj) {
+      errors.cnpj = 'CNPJ é obrigatório';
+    }
+    if (!formData.cellphone) {
+      errors.cellphone = 'Celular é obrigatório';
     }
     if (!formData.email) {
       errors.email = 'Email é obrigatório';
@@ -68,8 +79,10 @@ export const SignUpView = () => {
     }
     setIsLoading(true);
     try {
-      await registerPlayer({
-        nickname: formData.nickname,
+      await registerSeller({
+        name: formData.name,
+        cnpj: formData.cnpj,
+        cellphone: formData.cellphone,
         email: formData.email,
         password: formData.password,
       });
@@ -111,17 +124,39 @@ export const SignUpView = () => {
             </Card.Description>
 
             <Stack gap='2'>
-              <Field.Root invalid={!!errors.nickname}>
-                <Field.Label>Nickname</Field.Label>
+              <Field.Root invalid={!!errors.name}>
+                <Field.Label>Nome</Field.Label>
                 <Input
-                  placeholder='Insira seu nickname'
+                  placeholder='Insira seu nome'
                   onChange={(e) => {
-                    setErrors({ ...errors, nickname: '' });
-                    setFormData({ ...formData, nickname: e.target.value });
+                    setErrors({ ...errors, name: '' });
+                    setFormData({ ...formData, name: e.target.value });
                   }}
                 />
                 {errors.nickname && (
                   <Field.ErrorText>{errors.nickname}</Field.ErrorText>
+                )}
+              </Field.Root>
+              <Field.Root invalid={!!errors.cnpj}>  <Field.Label>CNPJ</Field.Label>
+                <Input
+                  placeholder='Insira seu CNPJ'
+                  onChange={(e) => {
+                    setErrors({ ...errors, cnpj: '' });
+                    setFormData({ ...formData, cnpj: e.target.value });
+                  }}
+                />
+              </Field.Root>
+              <Field.Root invalid={!!errors.cellphone}>
+                <Field.Label>Celular</Field.Label>
+                <Input
+                  placeholder='Insira seu celular'
+                  onChange={(e) => {
+                    setErrors({ ...errors, cellphone: '' });
+                    setFormData({ ...formData, cellphone: e.target.value });
+                  }}
+                />
+                {errors.cellphone && (
+                  <Field.ErrorText>{errors.cellphone}</Field.ErrorText>
                 )}
               </Field.Root>
               <Field.Root invalid={!!errors.email} colorPalette={'purple'}>

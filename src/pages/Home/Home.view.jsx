@@ -1,13 +1,21 @@
-import React from "react";
+import React,  { useEffect } from "react";
 import { Box, Button, Center, Flex, Heading, Icon, Image, Stack, Text} from "@chakra-ui/react";
 import { useNavigate } from "react-router";
 import { FaShoppingCart, FaChartBar, FaShieldAlt, FaSms } from "react-icons/fa";
 import logo from '../../assets/logo_editada.png';
+import { isAuthenticated } from "../../apis/login";
 
 
 
 export const HomeView = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    useEffect(() => {
+      if (isAuthenticated()) {
+        navigate('/');
+      }
+    }, [navigate]);
+
+  
 
   return (
     <Box w="100%" minH="100vh" bgGradient="linear(to-b, white, blue.50)">
