@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Box,
   Flex,
@@ -8,39 +8,38 @@ import {
   Badge,
   Progress,
   HStack,
-} from "@chakra-ui/react";
-import { FiPlus } from "react-icons/fi";
-import { useNavigate } from "react-router";
+} from '@chakra-ui/react';
+import { FiPlus } from 'react-icons/fi';
+import { useNavigate } from 'react-router';
 
 export const ListProductsview = () => {
   const navigate = useNavigate();
 
-  const green = "green.500";
-  const red = "red.500";
-  const blue = "blue.500";
+  const green = 'green.500';
+  const red = 'red.500';
+  const blue = 'blue.500';
 
   return (
-    <Box p={6} bg="white" rounded="md" shadow="md" minH="100vh">
+    <Box p={6} bg='white' rounded='md' shadow='md' minH='100vh'>
       {/* Header */}
-      <Flex justify="space-between" align="center" mb={6}>
-        <Heading size="lg" fontWeight="bold">
+      <Flex justify='space-between' align='center' mb={6}>
+        <Heading size='lg' fontWeight='bold'>
           Gerenciamento
         </Heading>
-        <Text color="gray.500" fontSize="sm">
+        <Text color='gray.500' fontSize='sm'>
           Controle completo do seu mercado
         </Text>
         <Flex gap={2}>
           <Button
-            size="sm"
-            variant="outline"
-            onClick={() => navigate("/ListProduct")}
-          >
+            size='sm'
+            variant='outline'
+            onClick={() => navigate('/ListProduct')}>
             Produtos
           </Button>
-          <Button size="sm" variant="outline">
+          <Button size='sm' variant='outline'>
             Vendas
           </Button>
-          <Button size="sm" colorScheme="blue" leftIcon={<FiPlus />}>
+          <Button size='sm' colorScheme='blue' leftIcon={<FiPlus />}>
             Nova Venda
           </Button>
         </Flex>
@@ -49,145 +48,131 @@ export const ListProductsview = () => {
       {/* Resumo principal */}
       <Flex
         gap={6}
-        wrap="wrap"
-        justify="space-between"
+        wrap='wrap'
+        justify='space-between'
         mb={8}
-        fontWeight="bold"
-        fontSize="lg"
-      >
+        fontWeight='bold'
+        fontSize='lg'>
         <Box>
-          <Text fontSize="sm" color="gray.600">
+          <Text fontSize='sm' color='gray.600'>
             Saldo Total
           </Text>
           <Text>R$ 15.430,75</Text>
         </Box>
         <Box color={green}>
-          <Text fontSize="sm" color="gray.600">
+          <Text fontSize='sm' color='gray.600'>
             Receita Hoje
           </Text>
           <Text>R$ 2.847,50</Text>
         </Box>
         <Box color={green}>
-          <Text fontSize="sm" color="gray.600">
+          <Text fontSize='sm' color='gray.600'>
             Receita Mês
           </Text>
           <Text>R$ 45.230,80</Text>
         </Box>
         <Box color={red}>
-          <Text fontSize="sm" color="gray.600">
+          <Text fontSize='sm' color='gray.600'>
             Gastos Hoje
           </Text>
           <Text>R$ 1.200,00</Text>
         </Box>
         <Box color={blue}>
-          <Text fontSize="sm" color="gray.600">
+          <Text fontSize='sm' color='gray.600'>
             Lucro Hoje
           </Text>
           <Text>R$ 1.647,50</Text>
         </Box>
       </Flex>
 
-      <Flex gap={6} wrap="wrap" justify="space-between">
+      <Flex gap={6} wrap='wrap' justify='space-between'>
         {/* Alertas de Estoque */}
-        <Box
-          flex="1"
-          minW="300px"
-          borderWidth="1px"
-          borderRadius="md"
-          p={4}
-        >
-          <Flex align="center" mb={2}>
-            <Badge colorScheme="yellow" mr={2}>
-            </Badge>
-            <Text fontWeight="bold">Alertas de Estoque</Text>
+        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
+          <Flex align='center' mb={2}>
+            <Badge colorScheme='yellow' mr={2}></Badge>
+            <Text fontWeight='bold'>Alertas de Estoque</Text>
           </Flex>
-          <Text fontSize="sm" mb={4} color="gray.600">
+          <Text fontSize='sm' mb={4} color='gray.600'>
             Produtos com estoque baixo ou em falta
           </Text>
 
           <Box mb={4}>
-            <Flex justify="space-between" mb={1}>
+            <Flex justify='space-between' mb={1}>
               <Text>Pão de Açúcar</Text>
-              <Badge colorScheme="red">Em Falta</Badge>
+              <Badge colorScheme='red'>Em Falta</Badge>
             </Flex>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize='sm' color='gray.500'>
               Atual: 0 - Mínimo: 5
             </Text>
-            <Progress.Root defaultValue={0} maxW="sm">
-                          <HStack gap="5">
-                            <Progress.Label>Usage</Progress.Label>
-                            <Progress.Track flex="1">
-                              <Progress.Range />
-                            </Progress.Track>
-                            <Progress.ValueText>40%</Progress.ValueText>
-                          </HStack>
-                        </Progress.Root>
+            <Progress.Root defaultValue={0} maxW='sm'>
+              <HStack gap='5'>
+                <Progress.Label>Usage</Progress.Label>
+                <Progress.Track flex='1'>
+                  <Progress.Range />
+                </Progress.Track>
+                <Progress.ValueText>40%</Progress.ValueText>
+              </HStack>
+            </Progress.Root>
           </Box>
 
           <Box mb={4}>
-            <Flex justify="space-between" mb={1}>
+            <Flex justify='space-between' mb={1}>
               <Text>Leite Integral 1L</Text>
-              <Badge colorScheme="yellow">Estoque Baixo</Badge>
+              <Badge colorScheme='yellow'>Estoque Baixo</Badge>
             </Flex>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize='sm' color='gray.500'>
               Atual: 3 - Mínimo: 10
             </Text>
 
-            <Progress.Root defaultValue={(3 / 10) * 100} maxW="sm">
-                          <HStack gap="5">
-                            <Progress.Label>Usage</Progress.Label>
-                            <Progress.Track flex="1">
-                              <Progress.Range />
-                            </Progress.Track>
-                            <Progress.ValueText>40%</Progress.ValueText>
-                          </HStack>
-                        </Progress.Root>
+            <Progress.Root defaultValue={(3 / 10) * 100} maxW='sm'>
+              <HStack gap='5'>
+                <Progress.Label>Usage</Progress.Label>
+                <Progress.Track flex='1'>
+                  <Progress.Range />
+                </Progress.Track>
+                <Progress.ValueText>40%</Progress.ValueText>
+              </HStack>
+            </Progress.Root>
           </Box>
 
           <Box>
-            <Flex justify="space-between" mb={1}>
+            <Flex justify='space-between' mb={1}>
               <Text>Açúcar 1kg</Text>
-              <Badge colorScheme="yellow">Estoque Baixo</Badge>
+              <Badge colorScheme='yellow'>Estoque Baixo</Badge>
             </Flex>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize='sm' color='gray.500'>
               Atual: 5 - Mínimo: 15
             </Text>
 
-             <Progress.Root defaultValue={(5 / 15) * 100} maxW="sm">
-                          <HStack gap="5">
-                            <Progress.Label>Usage</Progress.Label>
-                            <Progress.Track flex="1">
-                              <Progress.Range />
-                            </Progress.Track>
-                            <Progress.ValueText>40%</Progress.ValueText>
-                          </HStack>
-                        </Progress.Root>
+            <Progress.Root defaultValue={(5 / 15) * 100} maxW='sm'>
+              <HStack gap='5'>
+                <Progress.Label>Usage</Progress.Label>
+                <Progress.Track flex='1'>
+                  <Progress.Range />
+                </Progress.Track>
+                <Progress.ValueText>40%</Progress.ValueText>
+              </HStack>
+            </Progress.Root>
           </Box>
         </Box>
 
         {/* Top Produtos */}
-        <Box
-          flex="1"
-          minW="300px"
-          borderWidth="1px"
-          borderRadius="md"
-          p={4}
-        >
-          <Flex align="center" mb={4} justify="space-between">
-            <Text fontWeight="bold">Top Produtos</Text>
-            <Text fontSize="sm" color="gray.600">
+        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
+          <Flex align='center' mb={4} justify='space-between'>
+            <Text fontWeight='bold'>Top Produtos</Text>
+            <Text fontSize='sm' color='gray.600'>
               Mais vendidos do mês
             </Text>
           </Flex>
 
           <Box mb={4}>
-            <Flex justify="space-between" mb={1}>
-              <Text fontWeight="semibold">Coca-Cola 2L</Text>
-              <Badge colorScheme="gray" variant="outline" fontSize="xs">
+            <Flex justify='space-between' mb={1}>
+              <Text fontWeight='semibold'>Coca-Cola 2L</Text>
+              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
                 #1
               </Badge>
             </Flex>
-            <Flex justify="space-between" fontSize="sm" color="gray.600">
+            <Flex justify='space-between' fontSize='sm' color='gray.600'>
               <Text>Vendas: 45</Text>
               <Text color={green}>Receita: R$ 382,50</Text>
               <Text>Estoque: 28</Text>
@@ -195,13 +180,13 @@ export const ListProductsview = () => {
           </Box>
 
           <Box mb={4}>
-            <Flex justify="space-between" mb={1}>
-              <Text fontWeight="semibold">Pão Francês</Text>
-              <Badge colorScheme="gray" variant="outline" fontSize="xs">
+            <Flex justify='space-between' mb={1}>
+              <Text fontWeight='semibold'>Pão Francês</Text>
+              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
                 #2
               </Badge>
             </Flex>
-            <Flex justify="space-between" fontSize="sm" color="gray.600">
+            <Flex justify='space-between' fontSize='sm' color='gray.600'>
               <Text>Vendas: 120</Text>
               <Text color={green}>Receita: R$ 600,00</Text>
               <Text>Estoque: 0</Text>
@@ -209,13 +194,13 @@ export const ListProductsview = () => {
           </Box>
 
           <Box>
-            <Flex justify="space-between" mb={1}>
-              <Text fontWeight="semibold">Leite Integral</Text>
-              <Badge colorScheme="gray" variant="outline" fontSize="xs">
+            <Flex justify='space-between' mb={1}>
+              <Text fontWeight='semibold'>Leite Integral</Text>
+              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
                 #3
               </Badge>
             </Flex>
-            <Flex justify="space-between" fontSize="sm" color="gray.600">
+            <Flex justify='space-between' fontSize='sm' color='gray.600'>
               <Text>Vendas: 32</Text>
               <Text color={green}>Receita: R$ 185,60</Text>
               <Text>Estoque: 12</Text>
@@ -224,32 +209,26 @@ export const ListProductsview = () => {
         </Box>
 
         {/* Resumo de Vendas */}
-        <Box
-          flex="1"
-          minW="300px"
-          borderWidth="1px"
-          borderRadius="md"
-          p={4}
-        >
-          <Flex align="center" mb={4} justify="space-between">
-            <Text fontWeight="bold">Resumo de Vendas</Text>
-            <Text fontSize="sm" color="gray.600">
+        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
+          <Flex align='center' mb={4} justify='space-between'>
+            <Text fontWeight='bold'>Resumo de Vendas</Text>
+            <Text fontSize='sm' color='gray.600'>
               Performance por período
             </Text>
           </Flex>
 
           <Box mb={4}>
-            <Flex justify="space-between" mb={1}>
+            <Flex justify='space-between' mb={1}>
               <Text>Hoje</Text>
-              <Text fontSize="xs" color="gray.500">
+              <Text fontSize='xs' color='gray.500'>
                 28 vendas
               </Text>
             </Flex>
-            <Flex justify="space-between" fontWeight="semibold" mb={1}>
+            <Flex justify='space-between' fontWeight='semibold' mb={1}>
               <Text>Receita</Text>
               <Text color={green}>R$ 2.847,50</Text>
             </Flex>
-            <Flex justify="space-between" fontSize="sm" color={blue}>
+            <Flex justify='space-between' fontSize='sm' color={blue}>
               <Text>Ticket Médio</Text>
               <Text>R$ 101,70</Text>
             </Flex>

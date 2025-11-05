@@ -1,17 +1,15 @@
-import { SignInView } from "../pages/SignIn/SignIn.view";
-import { SignUpView } from "../pages/SignUp/SignUp.view";
-import { HomeView } from "../pages/Home/Home.view";
-// import { DashboardView } from "../pages/Dashboards/Dashboard.view";
-import { createBrowserRouter } from "react-router";
-import { PrivateRouteProvider } from "./components/PrivateRouteProvider";
-import { DashboardPage } from "../pages/Dashboards/Dashboard.page";
-import { ListProductsview } from "../pages/Products/ListProducts.view";
+import { SignInView } from '../pages/SignIn/SignIn.view';
+import { SignUpView } from '../pages/SignUp/SignUp.view';
+import { HomeView } from '../pages/Home/Home.view';
+import { createBrowserRouter } from 'react-router';
+import { PrivateRouteProvider } from './components/PrivateRouteProvider';
+import { ListProductsview } from '../pages/Products/ListProducts.view';
+import { Layout } from '../components/layout';
+import { DashboardView } from '../pages/Dashboards/Dashboard.view';
 
 export const router = createBrowserRouter([
-  
-  
   {
-    path: "/",
+    path: '/',
     element: (
       <PrivateRouteProvider>
         <HomeView />
@@ -19,31 +17,39 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/auth/login",
+    path: '/auth/login',
     element: <SignInView />,
   },
   {
-    path: "/seller/register",
+    path: '/seller/register',
     element: <SignUpView />,
   },
   {
-    path: "/Products",
-    element: <ListProductsview/>,
-  },
-   {
-    path: "/dashboard", //rota ainda não existe, precisamos criar no back
+    path: '/products',
     element: (
       <PrivateRouteProvider>
-        <DashboardPage/>
+        <Layout activeKey='products'>
+          <ListProductsview />
+        </Layout>
       </PrivateRouteProvider>
     ),
-  //   children: [{
-  //   path: "/sei",
-  //   element: (
-  //     <PrivateRouteProvider>
-  //       <HomeView />
-  //     </PrivateRouteProvider>
-  //   ),
-  // },]
+  },
+  {
+    path: '/dashboard',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='dashboard'>
+          <DashboardView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+    //   children: [{
+    //   path: "/sei",
+    //   element: (
+    //     <PrivateRouteProvider>
+    //       <HomeView />
+    //     </PrivateRouteProvider>
+    //   ),
+    // },]
   },
 ]);
