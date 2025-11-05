@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
   Link as ChakraLink,
-  Field
+  Field,
 } from '@chakra-ui/react';
 import { loginSeller, isAuthenticated } from '../../apis/login';
 import { Link, useNavigate } from 'react-router';
@@ -69,34 +69,30 @@ export const SignInView = () => {
 
   return (
     <Box
-      minH="100vh"
-      bgGradient="linear(to-b, blue.50, white)"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      p={4}
-    >
-      <Box
-        bg="white"
-        p={10}
-        rounded="lg"
-        boxShadow="xl"
-        maxW="md"
-        w="100%"
-      >
-        <Center mb={8} flexDirection="column" gap={3}>
-          <Flex align="center" gap={3}>
-            <img src={logo} alt="Logo StockPro" style={{ width: 250, height: 80 }} />
+      minH='100vh'
+      bgGradient='linear(to-b, blue.50, white)'
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
+      p={4}>
+      <Box bg='white' p={10} rounded='lg' boxShadow='xl' maxW='md' w='100%'>
+        <Center mb={8} flexDirection='column' gap={3}>
+          <Flex align='center' gap={3}>
+            <img
+              src={logo}
+              alt='Logo StockPro'
+              style={{ width: 250, height: 80 }}
+            />
             {/* <Text fontSize="2xl" fontWeight="bold" color="blue.600">
               StockPro
             </Text> */}
           </Flex>
         </Center>
 
-        <Heading mb={2} fontSize="2xl" textAlign="center" color="gray.700">
+        <Heading mb={2} fontSize='2xl' textAlign='center' color='gray.700'>
           Fazer Login
         </Heading>
-        <Text mb={6} fontSize="sm" color="gray.500" textAlign="center">
+        <Text mb={6} fontSize='sm' color='gray.500' textAlign='center'>
           Entre na sua conta para gerenciar seu mercado
         </Text>
 
@@ -104,80 +100,77 @@ export const SignInView = () => {
           onSubmit={(e) => {
             e.preventDefault();
             handleLogin();
-          }}
-        >
+          }}>
           <Stack spacing={4}>
-
             {/* Campo Email */}
             <Field.Root invalid={Boolean(errors.email)}>
               <Field.Label>Email</Field.Label>
               <Input
-                type="email"
-                placeholder="seu@email.com"
+                type='email'
+                placeholder='seu@email.com'
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                focusBorderColor="blue.500"
+                focusBorderColor='blue.500'
               />
-              {errors.email && <Field.ErrorText>{errors.email}</Field.ErrorText>}
+              {errors.email && (
+                <Field.ErrorText>{errors.email}</Field.ErrorText>
+              )}
             </Field.Root>
 
             {/* Campo Senha */}
             <Field.Root invalid={Boolean(errors.password)}>
               <Field.Label>Senha</Field.Label>
               <Input
-                type="password"
-                placeholder="******"
+                type='password'
+                placeholder='******'
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                focusBorderColor="blue.500"
+                focusBorderColor='blue.500'
               />
-              {errors.password && <Field.ErrorText>{errors.password}</Field.ErrorText>}
+              {errors.password && (
+                <Field.ErrorText>{errors.password}</Field.ErrorText>
+              )}
             </Field.Root>
 
             <Button
-              type="submit"
+              type='submit'
               // as={Link}
               // to='/dashboard'
-              colorScheme="blue"
+              colorScheme='blue'
               isLoading={isLoading}
-              size="lg"
-              fontWeight="bold"
-              borderRadius="md"
-              
-            >
+              size='lg'
+              fontWeight='bold'
+              borderRadius='md'>
               Entrar
             </Button>
 
             <Center>
               <ChakraLink
                 as={Link}
-                to="/recuperar-senha"
-                fontSize="sm"
-                color="blue.500"
-                _hover={{ textDecoration: 'underline' }}
-              >
+                to='/recuperar-senha'
+                fontSize='sm'
+                color='blue.500'
+                _hover={{ textDecoration: 'underline' }}>
                 Esqueceu sua senha?
               </ChakraLink>
             </Center>
 
-            <Center fontSize="sm" color="gray.600">
+            <Center fontSize='sm' color='gray.600'>
               Não tem uma conta?{' '}
               <ChakraLink
                 as={Link}
-                to="/seller/register"
-                color="blue.500"
-                fontWeight="semibold"
+                to='/seller/register'
+                color='blue.500'
+                fontWeight='semibold'
                 ml={1}
-                _hover={{ textDecoration: 'underline' }}
-              >
+                _hover={{ textDecoration: 'underline' }}>
                 Cadastre-se
               </ChakraLink>
             </Center>
-
           </Stack>
         </form>
       </Box>
