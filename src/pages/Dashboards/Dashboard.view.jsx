@@ -1,5 +1,5 @@
 import React from "react";
-import { useColorModeValue } from "../../components/ui/color-mode";
+import { useNavigate } from "react-router";
 import { Sidebar } from "../../components/layout/Sidebar";
 import {
   Box,
@@ -18,6 +18,7 @@ import {
 import { FiTrendingUp, FiTrendingDown, FiPlus, FiShoppingCart } from "react-icons/fi";
 
 export const DashboardView = () => {
+  const navigate = useNavigate();
   const green = "green.500";
   const red = "red.500";
   const blue = "blue.500";
@@ -35,7 +36,7 @@ export const DashboardView = () => {
           Controle completo do seu mercado
         </Text>
         <Flex gap={2}>
-          <Button size="sm" variant="outline" onClick={() => navigate("/ListProduct")}Entrar>
+          <Button size="sm" variant="outline" onClick={() => navigate("/ListProduct")}>
             Produtos
           </Button>
           <Button size="sm" variant="outline">

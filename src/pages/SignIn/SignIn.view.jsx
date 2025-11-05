@@ -55,7 +55,7 @@ export const SignInView = () => {
         title: 'Login realizado com sucesso',
         description: 'Bem-vindo de volta!',
       });
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       toaster.error({
         title: 'Erro ao realizar login',
