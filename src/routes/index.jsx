@@ -37,10 +37,12 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/Sales',
+    path: '/sales',
     element: (
       <PrivateRouteProvider>
-        <SalesView />
+        <Layout activeKey='sales'>
+          <SalesView />
+        </Layout>
       </PrivateRouteProvider>
     ),
   },
@@ -48,7 +50,19 @@ export const router = createBrowserRouter([
     path: '/sales/new',
     element: (
       <PrivateRouteProvider>
-        <CreateSaleView />
+        <Layout activeKey='sales'>
+          <CreateSaleView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: '/sales/new',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='sales'>
+          <CreateSaleView />
+        </Layout>
       </PrivateRouteProvider>
     ),
   },
