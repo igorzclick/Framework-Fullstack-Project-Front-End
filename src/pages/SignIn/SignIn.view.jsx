@@ -148,17 +148,6 @@ export const SignInView = () => {
               Entrar
             </Button>
 
-            <Center>
-              <ChakraLink
-                as={Link}
-                to='/recuperar-senha'
-                fontSize='sm'
-                color='blue.500'
-                _hover={{ textDecoration: 'underline' }}>
-                Esqueceu sua senha?
-              </ChakraLink>
-            </Center>
-
             <Center fontSize='sm' color='gray.600'>
               Não tem uma conta?{' '}
               <ChakraLink

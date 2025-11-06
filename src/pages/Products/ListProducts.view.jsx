@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import {
   Box,
   Flex,
@@ -8,251 +10,349 @@ import {
   Button,
   Badge,
   Input,
-  Stack,
   HStack,
   IconButton,
   Image,
-  Icon,
-} from "@chakra-ui/react";
-import { FiPlus, FiSearch, FiEdit, FiTrash2, FiEye } from "react-icons/fi";
+  Table,
+  InputGroup,
+  Dialog,
+} from '@chakra-ui/react';
+import { FiPlus, FiSearch, FiEdit, FiTrash2, FiEye } from 'react-icons/fi';
+import { FaCartPlus } from 'react-icons/fa';
+import { deleteProduct, getProducts } from '../../apis/products';
+import { toaster } from '../../components/ui/toaster';
+import Loading from '../../components/Loading';
+import { useAtom } from 'jotai';
+import { cartAtom } from '../../states/cart.states';
 
 export const ListProductsview = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [cartAtomState, setCartAtomState] = useAtom(cartAtom);
 
-  // Dados mockados - substituir por chamada à API
-  const products = [
-    {
-      id: "PROD-001",
-      sellerId: "VENDEDOR-123",
-      name: "Camiseta Branca",
-      price: 79.9,
-      quantity: 25,
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80",
-      status: "ativo",
-    },
-    {
-      id: "PROD-002",
-      sellerId: "VENDEDOR-456",
-      name: "Tênis Esportivo",
-      price: 249.99,
-      quantity: 10,
-      image:
-        "https://img.irroba.com.br/fit-in/600x600/filters:fill(fff):quality(80)/dmdamand/catalog/1500/thumbnail-co-12.jpg",
-      status: "inativo",
-    },
-    {
-      id: "PROD-003",
-      sellerId: "VENDEDOR-789",
-      name: "Jaqueta Jeans",
-      price: 199.5,
-      quantity: 5,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZJv3TJRqwLNlaJAZ9qNu4_ANX1TfukpirQ&s",
-      status: "ativo",
-    },
-  ];
+  // estado do modal
+  const [openDelete, setOpenDelete] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const filteredProducts = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.sellerId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    setLoading(true);
+    getProducts()
+      .then((data) => {
+        setProducts(data.products);
+      })
+      .catch(() => {
+        toaster.error({
+          title: 'Erro ao buscar produtos',
+          description: 'Ocorreu um erro ao buscar os produtos',
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
+  const handleAddProductToCart = (product) => {
+    const existingProduct = cartAtomState.find(
+      (item) => item.id === product.id
+    );
+    if (existingProduct) {
+      setCartAtomState((prev) =>
+        prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
+      return;
+    }
+    setCartAtomState((prev) => [
+      ...prev,
+      { id: product.id, quantity: 1, name: product.name },
+    ]);
   };
 
+  const handleConfirmDelete = () => {
+    if (selectedProduct) {
+      setLoadingDelete(true);
+      deleteProduct(selectedProduct.id)
+        .then(() => {
+          toaster.success({
+            title: 'Produto excluído',
+            description: `${selectedProduct.name} foi removido com sucesso.`,
+          });
+          setProducts((prev) =>
+            prev.filter((p) => p.id !== selectedProduct.id)
+          );
+          setOpenDelete(false);
+          setSelectedProduct(null);
+        })
+        .catch((err) => {
+          toaster.error({
+            title: 'Erro ao excluir produto',
+            description:
+              err?.response?.data?.message || 'Tente novamente mais tarde',
+          });
+        })
+        .finally(() => {
+          setLoadingDelete(false);
+        });
+    }
+  };
+
+  const filteredProducts = searchTerm
+    ? products.filter((p) =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : products;
+
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+
   const getStatusColor = (status) => {
-    const statusLower = status?.toLowerCase();
-    switch (statusLower) {
-      case "ativo":
-        return "green";
-      case "inativo":
-        return "red";
+    switch (status?.toLowerCase()) {
+      case 'ativo':
+        return 'green';
+      case 'inativo':
+        return 'red';
       default:
-        return "gray";
+        return 'gray';
     }
   };
 
   const totalProducts = products.length;
-  const activeProducts = products.filter((p) => p.status === "ativo").length;
-  const totalStock = products.reduce((sum, p) => sum + p.quantity, 0);
+  const activeProducts = products.filter(
+    (p) => p.status?.toLowerCase() === 'ativo'
+  ).length;
+  const totalStock = products.reduce((sum, p) => sum + (p.quantity || 0), 0);
+
+  if (loading) {
+    return <Loading message='Buscando produtos...' />;
+  }
 
   return (
-    <Box p={6} bg="white" rounded="md" shadow="md">
+    <Box p={6} bg='white' rounded='md' shadow='md'>
       {/* Header */}
-      <Flex justify="space-between" align="center" mb={6}>
+      <Flex justify='space-between' align='center' mb={6}>
         <Box>
-          <Heading size="lg" fontWeight="bold" mb={2}>
+          <Heading size='lg' fontWeight='bold' mb={2}>
             Produtos
           </Heading>
-          <Text color="gray.500" fontSize="sm">
+          <Text color='gray.500' fontSize='sm'>
             Gerencie seus produtos e estoque
           </Text>
         </Box>
-        <Flex gap={2}>
-          <Button size="sm" variant="outline" onClick={() => navigate("/sales")}>
-            Vendas
-          </Button>
-          <Button size="sm" variant="outline">
-            Produtos
-          </Button>
-          <Button
-            size="sm"
-            colorScheme="blue"
-            leftIcon={<FiPlus />}
-            onClick={() => navigate("/products/new")}
-          >
-            Novo Produto
-          </Button>
-        </Flex>
+        <Button
+          size='sm'
+          colorScheme='blue'
+          leftIcon={<FiPlus />}
+          onClick={() => navigate('/products/new')}>
+          Novo Produto
+        </Button>
       </Flex>
 
-      {/* Resumo */}
-      <Flex gap={6} wrap="wrap" mb={6}>
-        <Box flex="1" minW="200px" borderWidth="1px" borderRadius="md" p={4} bg="blue.50">
-          <Text fontSize="sm" color="gray.600" mb={1}>
+      {/* Cards de resumo */}
+      <Flex gap={6} wrap='wrap' mb={6}>
+        <Box
+          flex='1'
+          minW='200px'
+          borderWidth='1px'
+          borderRadius='md'
+          p={4}
+          bg='blue.50'>
+          <Text fontSize='sm' color='gray.600' mb={1}>
             Total de Produtos
           </Text>
-          <Text fontSize="2xl" fontWeight="bold" color="blue.600">
+          <Text fontSize='2xl' fontWeight='bold' color='blue.600'>
             {totalProducts}
           </Text>
         </Box>
-        <Box flex="1" minW="200px" borderWidth="1px" borderRadius="md" p={4} bg="green.50">
-          <Text fontSize="sm" color="gray.600" mb={1}>
+        <Box
+          flex='1'
+          minW='200px'
+          borderWidth='1px'
+          borderRadius='md'
+          p={4}
+          bg='green.50'>
+          <Text fontSize='sm' color='gray.600' mb={1}>
             Produtos Ativos
           </Text>
-          <Text fontSize="2xl" fontWeight="bold" color="green.600">
+          <Text fontSize='2xl' fontWeight='bold' color='green.600'>
             {activeProducts}
           </Text>
         </Box>
-        <Box flex="1" minW="200px" borderWidth="1px" borderRadius="md" p={4} bg="purple.50">
-          <Text fontSize="sm" color="gray.600" mb={1}>
+        <Box
+          flex='1'
+          minW='200px'
+          borderWidth='1px'
+          borderRadius='md'
+          p={4}
+          bg='purple.50'>
+          <Text fontSize='sm' color='gray.600' mb={1}>
             Total em Estoque
           </Text>
-          <Text fontSize="2xl" fontWeight="bold" color="purple.600">
+          <Text fontSize='2xl' fontWeight='bold' color='purple.600'>
             {totalStock}
           </Text>
         </Box>
       </Flex>
 
-      {/* Filtro e Busca */}
-      <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={4}>
-        <HStack spacing={2} maxW="400px" flex="1">
-          <Box color="gray.500">
-            <FiSearch />
-          </Box>
-          <Input
-            placeholder="Buscar por nome, ID ou vendedor..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            flex="1"
-          />
+      {/* Busca */}
+      <Flex justify='space-between' align='center' mb={4} wrap='wrap' gap={4}>
+        <HStack spacing={2} maxW='400px' flex='1'>
+          <InputGroup startElement={<FiSearch />}>
+            <Input
+              placeholder='Buscar por nome do produto'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              flex='1'
+            />
+          </InputGroup>
         </HStack>
       </Flex>
 
       {/* Tabela */}
-      <Box borderWidth="1px" borderRadius="md" overflow="hidden" mb={4}>
-        <Flex
-          bg="gray.50"
-          p={4}
-          borderBottomWidth="1px"
-          fontWeight="semibold"
-          fontSize="sm"
-          color="gray.700"
-        >
-          <Box flex="1">Imagem</Box>
-          <Box flex="2">Produto</Box>
-          <Box flex="1">Preço</Box>
-          <Box flex="1">Quantidade</Box>
-          <Box flex="1">Vendedor</Box>
-          <Box flex="1" textAlign="center">
-            Status
-          </Box>
-          <Box flex="1" textAlign="center">
-            Ações
-          </Box>
-        </Flex>
+      <Table.Root
+        size='md'
+        borderWidth='1px'
+        borderRadius='md'
+        overflow='hidden'>
+        <Table.Header bg='gray.50'>
+          <Table.Row>
+            <Table.ColumnHeader>ID</Table.ColumnHeader>
+            <Table.ColumnHeader>Imagem</Table.ColumnHeader>
+            <Table.ColumnHeader>Produto</Table.ColumnHeader>
+            <Table.ColumnHeader>Preço</Table.ColumnHeader>
+            <Table.ColumnHeader>Quantidade</Table.ColumnHeader>
+            <Table.ColumnHeader>Vendedor</Table.ColumnHeader>
+            <Table.ColumnHeader>Status</Table.ColumnHeader>
+            <Table.ColumnHeader textAlign='center'>Ações</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
 
-        {filteredProducts.length === 0 ? (
-          <Box p={8} textAlign="center">
-            <Text color="gray.500">Nenhum produto encontrado</Text>
-          </Box>
-        ) : (
-          <Stack spacing={0} divider={<Box borderTopWidth="1px" />}>
-            {filteredProducts.map((p) => (
-              <Flex
-                key={p.id}
-                p={4}
-                align="center"
-                _hover={{ bg: "gray.50" }}
-                transition="background 0.2s"
-              >
-                <Box flex="1">
+        <Table.Body>
+          {filteredProducts.length === 0 ? (
+            <Table.Row>
+              <Table.Cell colSpan={8} textAlign='center' py={8}>
+                <Text color='gray.500'>Nenhum produto encontrado</Text>
+              </Table.Cell>
+            </Table.Row>
+          ) : (
+            filteredProducts.map((p) => (
+              <Table.Row key={p.id} _hover={{ bg: 'gray.50' }}>
+                <Table.Cell fontWeight='semibold'>{p.id}</Table.Cell>
+                <Table.Cell>
                   <Image
-                    src={p.image}
+                    src={p.img || p.image}
                     alt={p.name}
-                    boxSize="50px"
-                    objectFit="cover"
-                    borderRadius="md"
+                    boxSize='50px'
+                    objectFit='cover'
+                    borderRadius='md'
                   />
-                </Box>
-                <Box flex="2" fontWeight="semibold">
-                  {p.name}
-                </Box>
-                <Box flex="1">{formatCurrency(p.price)}</Box>
-                <Box flex="1">{p.quantity}</Box>
-                <Box flex="1">{p.sellerId}</Box>
-                <Box flex="1" textAlign="center">
-                  <Badge colorScheme={getStatusColor(p.status)}>{p.status}</Badge>
-                </Box>
-                <Box flex="1" textAlign="center">
-                  <HStack spacing={2} justify="center">
+                </Table.Cell>
+                <Table.Cell>{p.name}</Table.Cell>
+                <Table.Cell>{formatCurrency(p.price)}</Table.Cell>
+                <Table.Cell>{p.quantity}</Table.Cell>
+                <Table.Cell>{p.seller_id}</Table.Cell>
+                <Table.Cell>
+                  <Badge colorScheme={getStatusColor(p.status)}>
+                    {p.status}
+                  </Badge>
+                </Table.Cell>
+                <Table.Cell textAlign='center'>
+                  <HStack spacing={2} justify='center'>
                     <IconButton
-                      size="sm"
-                      variant="ghost"
-                      aria-label="Ver detalhes"
-                      onClick={() => navigate(`/products/${p.id}`)}
-                      colorScheme="gray"
-                    >
-                      <Icon as={FiEye} boxSize={4} />
+                      size='sm'
+                      variant='ghost'
+                      aria-label='Ver detalhes'
+                      color='gray.600'
+                      onClick={() => navigate(`/product/detail/${p.id}`)}>
+                      <FiEye />
                     </IconButton>
                     <IconButton
-                      size="sm"
-                      variant="ghost"
-                      aria-label="Editar"
-                      colorScheme="blue"
-                      onClick={() => navigate(`/products/edit/${p.id}`)}
-                    >
-                      <Icon as={FiEdit} boxSize={4} />
+                      size='sm'
+                      variant='ghost'
+                      aria-label='Editar'
+                      color='blue.600'
+                      onClick={() => navigate(`/products/edit/${p.id}`)}>
+                      <FiEdit />
                     </IconButton>
                     <IconButton
-                      size="sm"
-                      variant="ghost"
-                      aria-label="Excluir"
-                      colorScheme="red"
+                      size='sm'
+                      variant='ghost'
+                      aria-label='Adicionar ao carrinho'
+                      color='blue.600'
+                      onClick={() => handleAddProductToCart(p)}>
+                      <FaCartPlus />
+                    </IconButton>
+                    <IconButton
+                      size='sm'
+                      variant='ghost'
+                      aria-label='Excluir'
+                      color='red.600'
                       onClick={() => {
-                        if (window.confirm(`Deseja realmente excluir ${p.name}?`)) {
-                          // Aqui vai a chamada à API para excluir
-                          console.log("Excluir produto:", p.id);
-                        }
-                      }}
-                    >
-                      <Icon as={FiTrash2} boxSize={4} />
+                        setSelectedProduct(p);
+                        setOpenDelete(true);
+                      }}>
+                      <FiTrash2 />
                     </IconButton>
                   </HStack>
-                </Box>
-              </Flex>
-            ))}
-          </Stack>
-        )}
-      </Box>
+                </Table.Cell>
+              </Table.Row>
+            ))
+          )}
+        </Table.Body>
+
+        <Table.Footer>
+          <Table.Row>
+            <Table.Cell colSpan={8}>
+              <Text fontSize='sm' color='gray.500' textAlign='right'>
+                Total de produtos exibidos: {filteredProducts.length}
+              </Text>
+            </Table.Cell>
+          </Table.Row>
+        </Table.Footer>
+      </Table.Root>
+
+      {/* Modal de confirmação de exclusão */}
+      <Dialog.Root
+        open={openDelete}
+        onOpenChange={(e) => setOpenDelete(e.open)}>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Confirmar exclusão</Dialog.Title>
+            </Dialog.Header>
+
+            <Dialog.Body>
+              <Dialog.Description>
+                Tem certeza que deseja excluir o produto{' '}
+                <strong>{selectedProduct?.name}</strong>?
+                <br />
+                Esta ação não poderá ser desfeita.
+              </Dialog.Description>
+            </Dialog.Body>
+
+            <Dialog.Footer>
+              <Button variant='outline' onClick={() => setOpenDelete(false)}>
+                Cancelar
+              </Button>
+              <Button
+                bg={'red.600'}
+                onClick={handleConfirmDelete}
+                disabled={loadingDelete}>
+                Excluir
+              </Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Dialog.Root>
     </Box>
   );
 };

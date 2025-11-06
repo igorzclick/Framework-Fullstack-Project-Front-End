@@ -9,15 +9,12 @@ import { DashboardView } from '../pages/Dashboards/Dashboard.view';
 import { SalesView } from '../pages/Sales/Sales.view';
 import { EditProductView } from '../pages/EditProducts/EditProducts.view';
 import { CreateProductView } from '../pages/CreateProducts/CreateProducts.view';
+import { ProductDetailsView } from '../pages/ProductDetail/Product-detail.view';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <PrivateRouteProvider>
-        <HomeView />
-      </PrivateRouteProvider>
-    ),
+    element: <HomeView />,
   },
   {
     path: '/auth/login',
@@ -53,6 +50,16 @@ export const router = createBrowserRouter([
       <PrivateRouteProvider>
         <Layout activeKey='products'>
           <EditProductView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: '/product/detail/:id',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='products'>
+          <ProductDetailsView />
         </Layout>
       </PrivateRouteProvider>
     ),

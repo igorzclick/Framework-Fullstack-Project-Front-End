@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import {
   Box,
   Button,
@@ -12,24 +12,25 @@ import {
   Heading,
   Image,
   Flex,
-} from "@chakra-ui/react";
-import { NativeSelect } from "@chakra-ui/react"; // ✅ importa o NativeSelect
-import { toaster } from "../../components/ui/toaster";
-import logo from "../../assets/logo_editada.png";
+} from '@chakra-ui/react';
+import { NativeSelect } from '@chakra-ui/react'; // ✅ importa o NativeSelect
+import { toaster } from '../../components/ui/toaster';
+import logo from '../../assets/logo_editada.png';
+import { createProduct } from '../../apis/products';
 
 export const CreateProductView = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    quantity: "",
-    image: "",
-    status: "ativo",
+    name: '',
+    price: '',
+    quantity: '',
+    image: '',
+    status: 'ativo',
   });
 
   const [errors, setErrors] = useState({
-    name: "",
-    price: "",
-    quantity: "",
+    name: '',
+    price: '',
+    quantity: '',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -37,11 +38,11 @@ export const CreateProductView = () => {
 
   const validateForm = () => {
     let newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "O nome é obrigatório";
+    if (!formData.name.trim()) newErrors.name = 'O nome é obrigatório';
     if (!formData.price || parseFloat(formData.price) <= 0)
-      newErrors.price = "Preço deve ser um número positivo";
+      newErrors.price = 'Preço deve ser um número positivo';
     if (!formData.quantity || parseInt(formData.quantity) <= 0)
-      newErrors.quantity = "Quantidade deve ser um número inteiro positivo";
+      newErrors.quantity = 'Quantidade deve ser um número inteiro positivo';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -52,41 +53,47 @@ export const CreateProductView = () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    try {
-      // Simulação de chamada à API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toaster.success({
-        title: "Produto criado com sucesso",
-        description: "O produto foi adicionado ao sistema",
+    createProduct({
+      name: formData.name,
+      price: parseFloat(formData.price),
+      quantity: parseInt(formData.quantity),
+      img: formData.image,
+    })
+      .then(() => {
+        toaster.success({
+          title: 'Produto criado com sucesso',
+          description: 'O produto foi adicionado ao sistema',
+        });
+        navigate('/products');
+      })
+      .catch((err) => {
+        toaster.error({
+          title: 'Erro ao criar produto',
+          description:
+            err.response?.data?.message ||
+            'Ocorreu um erro ao tentar criar o produto',
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-
-      navigate("/products");
-    } catch (err) {
-      toaster.error({
-        title: "Erro ao criar produto",
-        description:
-          err?.response?.data?.message || "Tente novamente mais tarde",
-      });
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const handleCancel = () => {
-    navigate("/products");
+    navigate('/products');
   };
 
   return (
-    <Center w="100%" h="100vh" py="10">
-      <Card.Root width="520px">
+    <Center w='100%' h='100vh' py='10'>
+      <Card.Root width='520px'>
         <form onSubmit={handleSubmit}>
-          <Card.Body gap="2">
-            <Center w="100%">
+          <Card.Body gap='2'>
+            <Center w='100%'>
               <img
                 src={logo}
-                alt="Logo"
-                style={{ width: "100px", objectFit: "cover", height: "40px" }}
+                alt='Logo'
+                style={{ width: '100px', objectFit: 'cover', height: '40px' }}
               />
             </Center>
 
@@ -95,12 +102,12 @@ export const CreateProductView = () => {
               Preencha os dados para cadastrar um novo produto
             </Card.Description>
 
-            <Stack gap="2">
+            <Stack gap='2'>
               {/* Nome */}
               <Field.Root invalid={!!errors.name}>
                 <Field.Label>Nome do Produto</Field.Label>
                 <Input
-                  placeholder="Digite o nome do produto"
+                  placeholder='Digite o nome do produto'
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -115,9 +122,9 @@ export const CreateProductView = () => {
               <Field.Root invalid={!!errors.price}>
                 <Field.Label>Preço</Field.Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="Digite o preço (Ex: 99.90)"
+                  type='number'
+                  step='0.01'
+                  placeholder='Digite o preço (Ex: 99.90)'
                   value={formData.price}
                   onChange={(e) =>
                     setFormData({ ...formData, price: e.target.value })
@@ -132,8 +139,8 @@ export const CreateProductView = () => {
               <Field.Root invalid={!!errors.quantity}>
                 <Field.Label>Quantidade</Field.Label>
                 <Input
-                  type="number"
-                  placeholder="Digite a quantidade"
+                  type='number'
+                  placeholder='Digite a quantidade'
                   value={formData.quantity}
                   onChange={(e) =>
                     setFormData({ ...formData, quantity: e.target.value })
@@ -148,7 +155,7 @@ export const CreateProductView = () => {
               <Field.Root>
                 <Field.Label>Imagem (URL)</Field.Label>
                 <Input
-                  placeholder="Cole o link da imagem"
+                  placeholder='Cole o link da imagem'
                   value={formData.image}
                   onChange={(e) =>
                     setFormData({ ...formData, image: e.target.value })
@@ -158,10 +165,10 @@ export const CreateProductView = () => {
                   <Image
                     src={formData.image}
                     alt={formData.name}
-                    boxSize="120px"
+                    boxSize='120px'
                     mt={2}
-                    objectFit="cover"
-                    borderRadius="md"
+                    objectFit='cover'
+                    borderRadius='md'
                   />
                 )}
               </Field.Root>
@@ -174,10 +181,9 @@ export const CreateProductView = () => {
                     value={formData.status}
                     onChange={(e) =>
                       setFormData({ ...formData, status: e.target.value })
-                    }
-                  >
-                    <option value="ativo">Ativo</option>
-                    <option value="inativo">Inativo</option>
+                    }>
+                    <option value='ativo'>Ativo</option>
+                    <option value='inativo'>Inativo</option>
                   </NativeSelect.Field>
                   <NativeSelect.Indicator />
                 </NativeSelect.Root>
@@ -185,17 +191,16 @@ export const CreateProductView = () => {
             </Stack>
           </Card.Body>
 
-          <Card.Footer flex flexDirection={"column"} gap="2">
+          <Card.Footer flex flexDirection={'column'} gap='2'>
             <Button
-              type="submit"
-              width={"100%"}
+              type='submit'
+              width={'100%'}
               isLoading={isLoading}
               disabled={isLoading}
-              colorScheme="blue"
-            >
+              colorScheme='blue'>
               Cadastrar Produto
             </Button>
-            <Button variant="outline" onClick={handleCancel} width={"100%"}>
+            <Button variant='outline' onClick={handleCancel} width={'100%'}>
               Cancelar
             </Button>
           </Card.Footer>

@@ -18,7 +18,6 @@ import { Link as ChakraLink } from '@chakra-ui/react';
 import { registerSeller } from '../../apis/registerSeller';
 
 export const SignUpView = () => {
-
   const [formData, setFormData] = useState({
     name: '',
     cnpj: '',
@@ -91,7 +90,7 @@ export const SignUpView = () => {
         title: 'Cadastro realizado com sucesso',
         description: 'Bem-vindo ao Think Fast!',
       });
-      navigate('/login');
+      navigate('/dashboard');
     } catch (err) {
       toaster.error({
         title: 'Erro ao realizar cadastro',
@@ -103,11 +102,13 @@ export const SignUpView = () => {
     }
   };
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    navigate(-1);
+  };
 
   return (
     <Center w='100%' h='100vh' my='10'>
-      <Card.Root width='520px' >
+      <Card.Root width='520px'>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -115,7 +116,10 @@ export const SignUpView = () => {
           }}>
           <Card.Body gap='2'>
             <Center w='100%'>
-              <img src={logo} style={{ width: '100px', objectFit: 'cover',   height:'40px'}} />
+              <img
+                src={logo}
+                style={{ width: '100px', objectFit: 'cover', height: '40px' }}
+              />
             </Center>
 
             <Card.Title>Cadastro de usuário</Card.Title>
@@ -137,7 +141,9 @@ export const SignUpView = () => {
                   <Field.ErrorText>{errors.nickname}</Field.ErrorText>
                 )}
               </Field.Root>
-              <Field.Root invalid={!!errors.cnpj}>  <Field.Label>CNPJ</Field.Label>
+              <Field.Root invalid={!!errors.cnpj}>
+                {' '}
+                <Field.Label>CNPJ</Field.Label>
                 <Input
                   placeholder='Insira seu CNPJ'
                   onChange={(e) => {
