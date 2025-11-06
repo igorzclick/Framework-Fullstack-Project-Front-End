@@ -37,6 +37,11 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
 
   const [open, setOpen] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
   return (
     <Box display='flex' minH='100vh'>
       {/* Sidebar */}
@@ -153,7 +158,8 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
             colorScheme='red'
             variant='ghost'
             w='full'
-            justifyContent='flex-start'>
+            justifyContent='flex-start'
+            onClick={handleLogout}>
             Sair
           </Button>
         </Box>
