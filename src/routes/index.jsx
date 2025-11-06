@@ -38,11 +38,11 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/sales',
+    path: '/products/new',
     element: (
       <PrivateRouteProvider>
-        <Layout activeKey='sales'>
-          <SalesView />
+        <Layout activeKey='products'>
+          <CreateProductView />
         </Layout>
       </PrivateRouteProvider>
     ),
@@ -58,10 +58,12 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/products/new',
+    path: '/sales',
     element: (
       <PrivateRouteProvider>
-        <CreateProductView />
+        <Layout activeKey='sales'>
+          <SalesView />
+        </Layout>
       </PrivateRouteProvider>
     ),
   },
@@ -74,13 +76,5 @@ export const router = createBrowserRouter([
         </Layout>
       </PrivateRouteProvider>
     ),
-    //   children: [{
-    //   path: "/sei",
-    //   element: (
-    //     <PrivateRouteProvider>
-    //       <HomeView />
-    //     </PrivateRouteProvider>
-    //   ),
-    // },]
   },
 ]);
