@@ -1,6 +1,7 @@
-import React from 'react';
-import { useColorModeValue } from '../ui/color-mode';
+'use client';
 
+import React, { useState } from 'react';
+import { useColorModeValue } from '../ui/color-mode';
 import {
   Box,
   VStack,
@@ -9,21 +10,23 @@ import {
   Icon,
   Button,
   Flex,
+  Portal,
+  CloseButton,
+  Drawer,
 } from '@chakra-ui/react';
 import {
-  AiOutlineDashboard,
   AiOutlineAppstore,
   AiOutlineShoppingCart,
   AiOutlineSetting,
   AiOutlineLogout,
 } from 'react-icons/ai';
 import { useNavigate } from 'react-router';
+import { Cart } from '../Cart/Cart.view';
 
 const navItems = [
   { label: 'Gerenciamento', icon: AiOutlineAppstore, key: 'dashboard' },
   { label: 'Produtos', icon: AiOutlineShoppingCart, key: 'products' },
   { label: 'Vendas', icon: AiOutlineShoppingCart, key: 'sales' },
-  { label: 'Configurações', icon: AiOutlineSetting, key: 'settings' },
 ];
 
 export const Layout = ({ activeKey = 'dashboard', children }) => {
@@ -32,8 +35,11 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
   const activeColor = useColorModeValue('blue.600', 'blue.300');
   const navigate = useNavigate();
 
+  const [open, setOpen] = useState(false);
+
   return (
     <Box display='flex' minH='100vh'>
+      {/* Sidebar */}
       <Box
         as='nav'
         position='fixed'
@@ -50,7 +56,6 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
         {/* Logo */}
         <Box
           my={6}
-          // colocar um icone de usuario aqui
           borderBottom='1px solid'
           borderColor={useColorModeValue('gray.200', 'gray.700')}>
           <HStack spacing={3}>
@@ -63,7 +68,8 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
               alignItems='center'
               justifyContent='center'
               color='white'
-              fontWeight='bold'></Box>
+              fontWeight='bold'
+            />
             <Text>StockPro</Text>
           </HStack>
         </Box>
@@ -94,9 +100,46 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
           })}
         </VStack>
 
-        {/* <Divider my={6} /> */}
+        {/* Botão do Carrinho */}
+        <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
+          <Drawer.Trigger asChild>
+            <Button
+              leftIcon={<AiOutlineShoppingCart />}
+              colorScheme='blue'
+              size='md'
+              mb={4}>
+              Ver Carrinho
+            </Button>
+          </Drawer.Trigger>
 
-        {/* Área do usuário */}
+          <Portal>
+            <Drawer.Backdrop />
+            <Drawer.Positioner>
+              <Drawer.Content>
+                <Drawer.Header>
+                  <Flex align='center' justify='space-between'>
+                    <Drawer.Title>Carrinho de Compras</Drawer.Title>
+                    <Drawer.CloseTrigger asChild>
+                      <CloseButton size='sm' />
+                    </Drawer.CloseTrigger>
+                  </Flex>
+                </Drawer.Header>
+
+                <Drawer.Body>
+                  <Cart />
+                </Drawer.Body>
+
+                <Drawer.Footer>
+                  <Button variant='outline' onClick={() => setOpen(false)}>
+                    Fechar
+                  </Button>
+                </Drawer.Footer>
+              </Drawer.Content>
+            </Drawer.Positioner>
+          </Portal>
+        </Drawer.Root>
+
+        {/* Área do Usuário */}
         <Box>
           <Text fontSize='sm' color='gray.600' mb={1}>
             Mercado São José
@@ -116,6 +159,7 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
         </Box>
       </Box>
 
+      {/* Conteúdo Principal */}
       <Box flex='1' ml='260px' bg='gray.50' p={6}>
         {children}
       </Box>

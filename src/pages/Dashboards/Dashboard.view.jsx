@@ -5,20 +5,16 @@ import {
   Flex,
   Text,
   Heading,
-  Button,
   Badge,
   Progress,
   HStack,
 } from '@chakra-ui/react';
-import { FiPlus } from 'react-icons/fi';
 
 export const DashboardView = () => {
   const navigate = useNavigate();
   const green = 'green.500';
   const red = 'red.500';
   const blue = 'blue.500';
-  // const grayLight = useColorModeValue("gray.100", "gray.700");
-  // console.log(grayLight)
 
   return (
     <Box p={6} bg='white' rounded='md' shadow='md'>
@@ -30,20 +26,6 @@ export const DashboardView = () => {
         <Text color='gray.500' fontSize='sm'>
           Controle completo do seu mercado
         </Text>
-        <Flex gap={2}>
-          <Button
-            size='sm'
-            variant='outline'
-            onClick={() => navigate('/products')}>
-            Produtos
-          </Button>
-          <Button size='sm' variant='outline'>
-            Vendas
-          </Button>
-          <Button size='sm' colorScheme='blue' leftIcon={<FiPlus />}>
-            Nova Venda
-          </Button>
-        </Flex>
       </Flex>
 
       {/* Resumo principal */}
