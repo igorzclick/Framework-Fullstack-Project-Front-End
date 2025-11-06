@@ -6,6 +6,8 @@ import { PrivateRouteProvider } from './components/PrivateRouteProvider';
 import { ListProductsview } from '../pages/Products/ListProducts.view';
 import { Layout } from '../components/layout';
 import { DashboardView } from '../pages/Dashboards/Dashboard.view';
+import { SalesView } from '../pages/Sales/Sales.view';
+import { CreateSaleView } from '../pages/CreateSale/CreateSale.view';
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +32,36 @@ export const router = createBrowserRouter([
       <PrivateRouteProvider>
         <Layout activeKey='products'>
           <ListProductsview />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: '/sales',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='sales'>
+          <SalesView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: '/sales/new',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='sales'>
+          <CreateSaleView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: '/sales/new',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='sales'>
+          <CreateSaleView />
         </Layout>
       </PrivateRouteProvider>
     ),
