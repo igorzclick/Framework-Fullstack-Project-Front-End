@@ -6,6 +6,8 @@ import { PrivateRouteProvider } from './components/PrivateRouteProvider';
 import { ListProductsview } from '../pages/Products/ListProducts.view';
 import { Layout } from '../components/layout';
 import { DashboardView } from '../pages/Dashboards/Dashboard.view';
+import { EditProductView } from '../pages/EditProducts/EditProducts.view';
+import { CreateProductView } from '../pages/CreateProducts/CreateProducts.view';
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +33,24 @@ export const router = createBrowserRouter([
         <Layout activeKey='products'>
           <ListProductsview />
         </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: '/products/edit/:id',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='products'>
+          <EditProductView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: "/products/new",
+    element: (
+      <PrivateRouteProvider>
+        <CreateProductView />
       </PrivateRouteProvider>
     ),
   },

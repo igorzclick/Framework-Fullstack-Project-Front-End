@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import {
   Box,
   Flex,
@@ -12,6 +13,7 @@ import {
 import { FiPlus } from 'react-icons/fi';
 
 export const DashboardView = () => {
+  const navigate = useNavigate();
   const green = 'green.500';
   const red = 'red.500';
   const blue = 'blue.500';
@@ -19,7 +21,7 @@ export const DashboardView = () => {
   // console.log(grayLight)
 
   return (
-    <Box p={6} bg='white' rounded='md' shadow='md' minH='100vh'>
+    <Box p={6} bg='white' rounded='md' shadow='md'>
       {/* Header */}
       <Flex justify='space-between' align='center' mb={6}>
         <Heading size='lg' fontWeight='bold'>
@@ -32,8 +34,7 @@ export const DashboardView = () => {
           <Button
             size='sm'
             variant='outline'
-            onClick={() => navigate('/ListProduct')}
-            Entrar>
+            onClick={() => navigate('/products')}>
             Produtos
           </Button>
           <Button size='sm' variant='outline'>
