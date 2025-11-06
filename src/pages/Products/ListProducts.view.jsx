@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import {
   Box,
   Flex,
@@ -6,235 +7,252 @@ import {
   Heading,
   Button,
   Badge,
-  Progress,
+  Input,
+  Stack,
   HStack,
-} from '@chakra-ui/react';
-import { FiPlus } from 'react-icons/fi';
-import { useNavigate } from 'react-router';
+  IconButton,
+  Image,
+  Icon,
+} from "@chakra-ui/react";
+import { FiPlus, FiSearch, FiEdit, FiTrash2, FiEye } from "react-icons/fi";
 
 export const ListProductsview = () => {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const green = 'green.500';
-  const red = 'red.500';
-  const blue = 'blue.500';
+  // Dados mockados - substituir por chamada à API
+  const products = [
+    {
+      id: "PROD-001",
+      sellerId: "VENDEDOR-123",
+      name: "Camiseta Branca",
+      price: 79.9,
+      quantity: 25,
+      image:
+        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80",
+      status: "ativo",
+    },
+    {
+      id: "PROD-002",
+      sellerId: "VENDEDOR-456",
+      name: "Tênis Esportivo",
+      price: 249.99,
+      quantity: 10,
+      image:
+        "https://img.irroba.com.br/fit-in/600x600/filters:fill(fff):quality(80)/dmdamand/catalog/1500/thumbnail-co-12.jpg",
+      status: "inativo",
+    },
+    {
+      id: "PROD-003",
+      sellerId: "VENDEDOR-789",
+      name: "Jaqueta Jeans",
+      price: 199.5,
+      quantity: 5,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZJv3TJRqwLNlaJAZ9qNu4_ANX1TfukpirQ&s",
+      status: "ativo",
+    },
+  ];
+
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.sellerId.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+
+  const getStatusColor = (status) => {
+    const statusLower = status?.toLowerCase();
+    switch (statusLower) {
+      case "ativo":
+        return "green";
+      case "inativo":
+        return "red";
+      default:
+        return "gray";
+    }
+  };
+
+  const totalProducts = products.length;
+  const activeProducts = products.filter((p) => p.status === "ativo").length;
+  const totalStock = products.reduce((sum, p) => sum + p.quantity, 0);
 
   return (
-    <Box p={6} bg='white' rounded='md' shadow='md' minH='100vh'>
+    <Box p={6} bg="white" rounded="md" shadow="md">
       {/* Header */}
-      <Flex justify='space-between' align='center' mb={6}>
-        <Heading size='lg' fontWeight='bold'>
-          Gerenciamento
-        </Heading>
-        <Text color='gray.500' fontSize='sm'>
-          Controle completo do seu mercado
-        </Text>
-        <Flex gap={2}>
-          <Button
-            size='sm'
-            variant='outline'
-            onClick={() => navigate('/ListProduct')}>
+      <Flex justify="space-between" align="center" mb={6}>
+        <Box>
+          <Heading size="lg" fontWeight="bold" mb={2}>
             Produtos
-          </Button>
-          <Button size='sm' variant='outline'>
+          </Heading>
+          <Text color="gray.500" fontSize="sm">
+            Gerencie seus produtos e estoque
+          </Text>
+        </Box>
+        <Flex gap={2}>
+          <Button size="sm" variant="outline" onClick={() => navigate("/sales")}>
             Vendas
           </Button>
-          <Button size='sm' colorScheme='blue' leftIcon={<FiPlus />}>
-            Nova Venda
+          <Button size="sm" variant="outline">
+            Produtos
+          </Button>
+          <Button
+            size="sm"
+            colorScheme="blue"
+            leftIcon={<FiPlus />}
+            onClick={() => navigate("/products/new")}
+          >
+            Novo Produto
           </Button>
         </Flex>
       </Flex>
 
-      {/* Resumo principal */}
-      <Flex
-        gap={6}
-        wrap='wrap'
-        justify='space-between'
-        mb={8}
-        fontWeight='bold'
-        fontSize='lg'>
-        <Box>
-          <Text fontSize='sm' color='gray.600'>
-            Saldo Total
+      {/* Resumo */}
+      <Flex gap={6} wrap="wrap" mb={6}>
+        <Box flex="1" minW="200px" borderWidth="1px" borderRadius="md" p={4} bg="blue.50">
+          <Text fontSize="sm" color="gray.600" mb={1}>
+            Total de Produtos
           </Text>
-          <Text>R$ 15.430,75</Text>
+          <Text fontSize="2xl" fontWeight="bold" color="blue.600">
+            {totalProducts}
+          </Text>
         </Box>
-        <Box color={green}>
-          <Text fontSize='sm' color='gray.600'>
-            Receita Hoje
+        <Box flex="1" minW="200px" borderWidth="1px" borderRadius="md" p={4} bg="green.50">
+          <Text fontSize="sm" color="gray.600" mb={1}>
+            Produtos Ativos
           </Text>
-          <Text>R$ 2.847,50</Text>
+          <Text fontSize="2xl" fontWeight="bold" color="green.600">
+            {activeProducts}
+          </Text>
         </Box>
-        <Box color={green}>
-          <Text fontSize='sm' color='gray.600'>
-            Receita Mês
+        <Box flex="1" minW="200px" borderWidth="1px" borderRadius="md" p={4} bg="purple.50">
+          <Text fontSize="sm" color="gray.600" mb={1}>
+            Total em Estoque
           </Text>
-          <Text>R$ 45.230,80</Text>
-        </Box>
-        <Box color={red}>
-          <Text fontSize='sm' color='gray.600'>
-            Gastos Hoje
+          <Text fontSize="2xl" fontWeight="bold" color="purple.600">
+            {totalStock}
           </Text>
-          <Text>R$ 1.200,00</Text>
-        </Box>
-        <Box color={blue}>
-          <Text fontSize='sm' color='gray.600'>
-            Lucro Hoje
-          </Text>
-          <Text>R$ 1.647,50</Text>
         </Box>
       </Flex>
 
-      <Flex gap={6} wrap='wrap' justify='space-between'>
-        {/* Alertas de Estoque */}
-        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
-          <Flex align='center' mb={2}>
-            <Badge colorScheme='yellow' mr={2}></Badge>
-            <Text fontWeight='bold'>Alertas de Estoque</Text>
-          </Flex>
-          <Text fontSize='sm' mb={4} color='gray.600'>
-            Produtos com estoque baixo ou em falta
-          </Text>
-
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text>Pão de Açúcar</Text>
-              <Badge colorScheme='red'>Em Falta</Badge>
-            </Flex>
-            <Text fontSize='sm' color='gray.500'>
-              Atual: 0 - Mínimo: 5
-            </Text>
-            <Progress.Root defaultValue={0} maxW='sm'>
-              <HStack gap='5'>
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex='1'>
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
+      {/* Filtro e Busca */}
+      <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={4}>
+        <HStack spacing={2} maxW="400px" flex="1">
+          <Box color="gray.500">
+            <FiSearch />
           </Box>
-
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text>Leite Integral 1L</Text>
-              <Badge colorScheme='yellow'>Estoque Baixo</Badge>
-            </Flex>
-            <Text fontSize='sm' color='gray.500'>
-              Atual: 3 - Mínimo: 10
-            </Text>
-
-            <Progress.Root defaultValue={(3 / 10) * 100} maxW='sm'>
-              <HStack gap='5'>
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex='1'>
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
-          </Box>
-
-          <Box>
-            <Flex justify='space-between' mb={1}>
-              <Text>Açúcar 1kg</Text>
-              <Badge colorScheme='yellow'>Estoque Baixo</Badge>
-            </Flex>
-            <Text fontSize='sm' color='gray.500'>
-              Atual: 5 - Mínimo: 15
-            </Text>
-
-            <Progress.Root defaultValue={(5 / 15) * 100} maxW='sm'>
-              <HStack gap='5'>
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex='1'>
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
-          </Box>
-        </Box>
-
-        {/* Top Produtos */}
-        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
-          <Flex align='center' mb={4} justify='space-between'>
-            <Text fontWeight='bold'>Top Produtos</Text>
-            <Text fontSize='sm' color='gray.600'>
-              Mais vendidos do mês
-            </Text>
-          </Flex>
-
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text fontWeight='semibold'>Coca-Cola 2L</Text>
-              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
-                #1
-              </Badge>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color='gray.600'>
-              <Text>Vendas: 45</Text>
-              <Text color={green}>Receita: R$ 382,50</Text>
-              <Text>Estoque: 28</Text>
-            </Flex>
-          </Box>
-
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text fontWeight='semibold'>Pão Francês</Text>
-              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
-                #2
-              </Badge>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color='gray.600'>
-              <Text>Vendas: 120</Text>
-              <Text color={green}>Receita: R$ 600,00</Text>
-              <Text>Estoque: 0</Text>
-            </Flex>
-          </Box>
-
-          <Box>
-            <Flex justify='space-between' mb={1}>
-              <Text fontWeight='semibold'>Leite Integral</Text>
-              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
-                #3
-              </Badge>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color='gray.600'>
-              <Text>Vendas: 32</Text>
-              <Text color={green}>Receita: R$ 185,60</Text>
-              <Text>Estoque: 12</Text>
-            </Flex>
-          </Box>
-        </Box>
-
-        {/* Resumo de Vendas */}
-        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
-          <Flex align='center' mb={4} justify='space-between'>
-            <Text fontWeight='bold'>Resumo de Vendas</Text>
-            <Text fontSize='sm' color='gray.600'>
-              Performance por período
-            </Text>
-          </Flex>
-
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text>Hoje</Text>
-              <Text fontSize='xs' color='gray.500'>
-                28 vendas
-              </Text>
-            </Flex>
-            <Flex justify='space-between' fontWeight='semibold' mb={1}>
-              <Text>Receita</Text>
-              <Text color={green}>R$ 2.847,50</Text>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color={blue}>
-              <Text>Ticket Médio</Text>
-              <Text>R$ 101,70</Text>
-            </Flex>
-          </Box>
-        </Box>
+          <Input
+            placeholder="Buscar por nome, ID ou vendedor..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            flex="1"
+          />
+        </HStack>
       </Flex>
+
+      {/* Tabela */}
+      <Box borderWidth="1px" borderRadius="md" overflow="hidden" mb={4}>
+        <Flex
+          bg="gray.50"
+          p={4}
+          borderBottomWidth="1px"
+          fontWeight="semibold"
+          fontSize="sm"
+          color="gray.700"
+        >
+          <Box flex="1">Imagem</Box>
+          <Box flex="2">Produto</Box>
+          <Box flex="1">Preço</Box>
+          <Box flex="1">Quantidade</Box>
+          <Box flex="1">Vendedor</Box>
+          <Box flex="1" textAlign="center">
+            Status
+          </Box>
+          <Box flex="1" textAlign="center">
+            Ações
+          </Box>
+        </Flex>
+
+        {filteredProducts.length === 0 ? (
+          <Box p={8} textAlign="center">
+            <Text color="gray.500">Nenhum produto encontrado</Text>
+          </Box>
+        ) : (
+          <Stack spacing={0} divider={<Box borderTopWidth="1px" />}>
+            {filteredProducts.map((p) => (
+              <Flex
+                key={p.id}
+                p={4}
+                align="center"
+                _hover={{ bg: "gray.50" }}
+                transition="background 0.2s"
+              >
+                <Box flex="1">
+                  <Image
+                    src={p.image}
+                    alt={p.name}
+                    boxSize="50px"
+                    objectFit="cover"
+                    borderRadius="md"
+                  />
+                </Box>
+                <Box flex="2" fontWeight="semibold">
+                  {p.name}
+                </Box>
+                <Box flex="1">{formatCurrency(p.price)}</Box>
+                <Box flex="1">{p.quantity}</Box>
+                <Box flex="1">{p.sellerId}</Box>
+                <Box flex="1" textAlign="center">
+                  <Badge colorScheme={getStatusColor(p.status)}>{p.status}</Badge>
+                </Box>
+                <Box flex="1" textAlign="center">
+                  <HStack spacing={2} justify="center">
+                    <IconButton
+                      size="sm"
+                      variant="ghost"
+                      aria-label="Ver detalhes"
+                      onClick={() => navigate(`/products/${p.id}`)}
+                      colorScheme="gray"
+                    >
+                      <Icon as={FiEye} boxSize={4} />
+                    </IconButton>
+                    <IconButton
+                      size="sm"
+                      variant="ghost"
+                      aria-label="Editar"
+                      colorScheme="blue"
+                      onClick={() => navigate(`/products/edit/${p.id}`)}
+                    >
+                      <Icon as={FiEdit} boxSize={4} />
+                    </IconButton>
+                    <IconButton
+                      size="sm"
+                      variant="ghost"
+                      aria-label="Excluir"
+                      colorScheme="red"
+                      onClick={() => {
+                        if (window.confirm(`Deseja realmente excluir ${p.name}?`)) {
+                          // Aqui vai a chamada à API para excluir
+                          console.log("Excluir produto:", p.id);
+                        }
+                      }}
+                    >
+                      <Icon as={FiTrash2} boxSize={4} />
+                    </IconButton>
+                  </HStack>
+                </Box>
+              </Flex>
+            ))}
+          </Stack>
+        )}
+      </Box>
     </Box>
   );
 };

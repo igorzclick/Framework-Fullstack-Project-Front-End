@@ -7,7 +7,8 @@ import { ListProductsview } from '../pages/Products/ListProducts.view';
 import { Layout } from '../components/layout';
 import { DashboardView } from '../pages/Dashboards/Dashboard.view';
 import { SalesView } from '../pages/Sales/Sales.view';
-import { CreateSaleView } from '../pages/CreateSale/CreateSale.view';
+import { EditProductView } from '../pages/EditProducts/EditProducts.view';
+import { CreateProductView } from '../pages/CreateProducts/CreateProducts.view';
 
 export const router = createBrowserRouter([
   {
@@ -37,31 +38,31 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: '/products/new',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='products'>
+          <CreateProductView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
+    path: '/products/edit/:id',
+    element: (
+      <PrivateRouteProvider>
+        <Layout activeKey='products'>
+          <EditProductView />
+        </Layout>
+      </PrivateRouteProvider>
+    ),
+  },
+  {
     path: '/sales',
     element: (
       <PrivateRouteProvider>
         <Layout activeKey='sales'>
           <SalesView />
-        </Layout>
-      </PrivateRouteProvider>
-    ),
-  },
-  {
-    path: '/sales/new',
-    element: (
-      <PrivateRouteProvider>
-        <Layout activeKey='sales'>
-          <CreateSaleView />
-        </Layout>
-      </PrivateRouteProvider>
-    ),
-  },
-  {
-    path: '/sales/new',
-    element: (
-      <PrivateRouteProvider>
-        <Layout activeKey='sales'>
-          <CreateSaleView />
         </Layout>
       </PrivateRouteProvider>
     ),
@@ -75,13 +76,5 @@ export const router = createBrowserRouter([
         </Layout>
       </PrivateRouteProvider>
     ),
-    //   children: [{
-    //   path: "/sei",
-    //   element: (
-    //     <PrivateRouteProvider>
-    //       <HomeView />
-    //     </PrivateRouteProvider>
-    //   ),
-    // },]
   },
 ]);

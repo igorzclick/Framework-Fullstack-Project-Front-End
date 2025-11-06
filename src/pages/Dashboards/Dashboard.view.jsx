@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import {
   Box,
   Flex,
@@ -10,12 +11,13 @@ import {
 } from '@chakra-ui/react';
 
 export const DashboardView = () => {
+  const navigate = useNavigate();
   const green = 'green.500';
   const red = 'red.500';
   const blue = 'blue.500';
 
   return (
-    <Box p={6} bg='white' rounded='md' shadow='md' minH='100vh'>
+    <Box p={6} bg='white' rounded='md' shadow='md'>
       {/* Header */}
       <Flex justify='space-between' align='center' mb={6}>
         <Heading size='lg' fontWeight='bold'>
