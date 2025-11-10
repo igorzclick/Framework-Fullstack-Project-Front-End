@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
 import {
   Box,
   Flex,
@@ -15,16 +14,22 @@ import {
   getSalesSummary,
   getTopSellingProducts,
 } from '../../apis/dashboard';
+import Loading from '../../components/Loading';
+import { toaster } from '../../components/ui/toaster';
 
 export const DashboardView = () => {
   const [lowStockProducts, setLowStockProducts] = useState([]);
   const [topSellingProducts, setTopSellingProducts] = useState([]);
   const [salesSummary, setSalesSummary] = useState({});
   const [dashboardMetrics, setDashboardMetrics] = useState({});
+  const [loading, setLoading] = useState({
+    lowStock: true,
+    topSelling: true,
+    salesSummary: true,
+    dashboardMetrics: true,
+  });
 
   const green = 'green.500';
-  const red = 'red.500';
-  const blue = 'blue.500';
 
   const formatCurrency = (value) =>
     new Intl.NumberFormat('pt-BR', {
@@ -33,22 +38,71 @@ export const DashboardView = () => {
     }).format(value);
 
   useEffect(() => {
-    getLowStockProducts().then((data) => {
-      setLowStockProducts(data.products);
-    });
+    getLowStockProducts()
+      .then((data) => {
+        setLowStockProducts(data.products);
+      })
+      .catch(() => {
+        toaster.error({
+          title: 'Erro ao carregar métricas de produtos com estoque baixo',
+          description: 'Tente novamente mais tarde',
+        });
+      })
+      .finally(() => {
+        setLoading((prev) => ({ ...prev, lowStock: false }));
+      });
 
-    getTopSellingProducts().then((data) => {
-      setTopSellingProducts(data.products);
-    });
+    getTopSellingProducts()
+      .then((data) => {
+        setTopSellingProducts(data.products);
+      })
+      .catch(() => {
+        toaster.error({
+          title: 'Erro ao carregar métricas de produtos mais vendidos',
+          description: 'Tente novamente mais tarde',
+        });
+      })
+      .finally(() => {
+        setLoading((prev) => ({ ...prev, topSelling: false }));
+      });
 
-    getSalesSummary().then((data) => {
-      setSalesSummary(data);
-    });
+    getSalesSummary()
+      .then((data) => {
+        setSalesSummary(data);
+      })
+      .catch(() => {
+        toaster.error({
+          title: 'Erro ao carregar resumo de vendas',
+          description: 'Tente novamente mais tarde',
+        });
+      })
+      .finally(() => {
+        setLoading((prev) => ({ ...prev, salesSummary: false }));
+      });
 
-    getDashboardMetrics().then((data) => {
-      setDashboardMetrics(data);
-    });
+    getDashboardMetrics()
+      .then((data) => {
+        setDashboardMetrics(data);
+      })
+      .catch(() => {
+        toaster.error({
+          title: 'Erro ao carregar métricas do dashboard',
+          description: 'Tente novamente mais tarde',
+        });
+      })
+      .finally(() => {
+        setLoading((prev) => ({ ...prev, dashboardMetrics: false }));
+      });
   }, []);
+
+  if (
+    loading.lowStock ||
+    loading.topSelling ||
+    loading.salesSummary ||
+    loading.dashboardMetrics
+  ) {
+    return <Loading message='Carregando métricas...' />;
+  }
 
   return (
     <Box p={6} bg='white' rounded='md' shadow='md'>
@@ -101,7 +155,6 @@ export const DashboardView = () => {
           // bg={grayLight}
         >
           <Flex align='center' mb={2}>
-            <Badge colorScheme='yellow' mr={2}></Badge>
             <Text fontWeight='bold'>Alertas de Estoque</Text>
           </Flex>
           <Text fontSize='sm' mb={4} color='gray.600'>

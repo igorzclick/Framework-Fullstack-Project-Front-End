@@ -1,5 +1,6 @@
 'use client';
 
+import logo from '../../assets/logo_editada.png';
 import React, { useState } from 'react';
 import { useColorModeValue } from '../ui/color-mode';
 import {
@@ -61,23 +62,10 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
         display='flex'
         flexDirection='column'
         justifyContent='space-between'>
-        {/* Logo */}
-        <Box my={6}>
-          <HStack spacing={3}>
-            <Box
-              w={8}
-              h={8}
-              bg='blue.600'
-              borderRadius='md'
-              display='flex'
-              alignItems='center'
-              justifyContent='center'
-              color='white'
-              fontWeight='bold'
-            />
-            <Text>StockPro</Text>
-          </HStack>
-        </Box>
+        <img
+          src={logo}
+          style={{ width: '100px', objectFit: 'contain', height: '40px' }}
+        />
 
         <Separator />
 

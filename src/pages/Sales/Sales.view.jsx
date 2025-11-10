@@ -18,6 +18,7 @@ import { deleteSale, getSales } from '../../apis/sale';
 import { parseISO, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toaster } from '../../components/ui/toaster';
+import Loading from '../../components/Loading';
 
 export const SalesView = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,8 +28,18 @@ export const SalesView = () => {
   const [selectedSale, setSelectedSale] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(false);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    getSales().then((data) => setSales(data.sales));
+    getSales()
+      .then((data) => setSales(data.sales))
+      .catch(() =>
+        toaster.error({
+          title: 'Erro ao carregar vendas',
+          description: 'Tente novamente mais tarde',
+        })
+      )
+      .finally(() => setLoading(false));
   }, []);
 
   const filteredSales = searchTerm
@@ -78,6 +89,10 @@ export const SalesView = () => {
   };
 
   const totalSales = sales.reduce((sum, sale) => sum + (sale.price || 0), 0);
+
+  if (loading) {
+    return <Loading message='Carregando vendas...' />;
+  }
 
   return (
     <Box p={6} bg='white' rounded='md' shadow='md'>
