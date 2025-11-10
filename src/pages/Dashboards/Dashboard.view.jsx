@@ -146,14 +146,7 @@ export const DashboardView = () => {
 
       <Flex gap={6} wrap='wrap' justify='space-between'>
         {/* Alertas de Estoque */}
-        <Box
-          flex='1'
-          minW='300px'
-          borderWidth='1px'
-          borderRadius='md'
-          p={4}
-          // bg={grayLight}
-        >
+        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
           <Flex align='center' mb={2}>
             <Text fontWeight='bold'>Alertas de Estoque</Text>
           </Flex>
@@ -230,14 +223,7 @@ export const DashboardView = () => {
         </Box>
 
         {/* Resumo de Vendas */}
-        <Box
-          flex='1'
-          minW='300px'
-          borderWidth='1px'
-          borderRadius='md'
-          p={4}
-          // bg={grayLight}
-        >
+        <Box flex='1' minW='300px' borderWidth='1px' borderRadius='md' p={4}>
           <Flex align='center' mb={4} justify='space-between'>
             <Text fontWeight='bold'>Resumo de Vendas</Text>
             <Text fontSize='sm' color='gray.600'>
@@ -250,12 +236,14 @@ export const DashboardView = () => {
             <Flex justify='space-between' mb={1}>
               <Text>Hoje</Text>
               <Text fontSize='xs' color='gray.500'>
-                28 vendas
+                {salesSummary.items_today} vendas
               </Text>
             </Flex>
             <Flex justify='space-between' fontWeight='semibold' mb={1}>
               <Text>Receita</Text>
-              <Text color={green}>R$ 2.847,50</Text>
+              <Text color={green}>
+                {formatCurrency(salesSummary.revenue_today)}
+              </Text>
             </Flex>
 
             {/* <Box height="1px" bg="gray.200" my={3} /> */}
@@ -266,12 +254,14 @@ export const DashboardView = () => {
             <Flex justify='space-between' mb={1}>
               <Text>Ontem</Text>
               <Text fontSize='xs' color='gray.500'>
-                25 vendas
+                {salesSummary.items_yesterday} vendas
               </Text>
             </Flex>
             <Flex justify='space-between' fontWeight='semibold' mb={1}>
               <Text>Receita</Text>
-              <Text color={green}>R$ 2.456,80</Text>
+              <Text color={green}>
+                {formatCurrency(salesSummary.revenue_yesterday)}
+              </Text>
             </Flex>
 
             {/* <Box height="1px" bg="gray.200" my={3} /> */}
@@ -282,12 +272,14 @@ export const DashboardView = () => {
             <Flex justify='space-between' mb={1}>
               <Text>Esta Semana</Text>
               <Text fontSize='xs' color='gray.500'>
-                156 vendas
+                {salesSummary.items_week} vendas
               </Text>
             </Flex>
             <Flex justify='space-between' fontWeight='semibold' mb={1}>
               <Text>Receita</Text>
-              <Text color={green}>R$ 15.890,30</Text>
+              <Text color={green}>
+                {formatCurrency(salesSummary.revenue_week)}
+              </Text>
             </Flex>
           </Box>
         </Box>
