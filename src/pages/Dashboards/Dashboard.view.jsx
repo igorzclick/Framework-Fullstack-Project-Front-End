@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Box,
@@ -9,12 +9,46 @@ import {
   Progress,
   HStack,
 } from '@chakra-ui/react';
+import {
+  getDashboardMetrics,
+  getLowStockProducts,
+  getSalesSummary,
+  getTopSellingProducts,
+} from '../../apis/dashboard';
 
 export const DashboardView = () => {
-  const navigate = useNavigate();
+  const [lowStockProducts, setLowStockProducts] = useState([]);
+  const [topSellingProducts, setTopSellingProducts] = useState([]);
+  const [salesSummary, setSalesSummary] = useState({});
+  const [dashboardMetrics, setDashboardMetrics] = useState({});
+
   const green = 'green.500';
   const red = 'red.500';
   const blue = 'blue.500';
+
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+
+  useEffect(() => {
+    getLowStockProducts().then((data) => {
+      setLowStockProducts(data.products);
+    });
+
+    getTopSellingProducts().then((data) => {
+      setTopSellingProducts(data.products);
+    });
+
+    getSalesSummary().then((data) => {
+      setSalesSummary(data);
+    });
+
+    getDashboardMetrics().then((data) => {
+      setDashboardMetrics(data);
+    });
+  }, []);
 
   return (
     <Box p={6} bg='white' rounded='md' shadow='md'>
@@ -40,31 +74,19 @@ export const DashboardView = () => {
           <Text fontSize='sm' color='gray.600'>
             Saldo Total
           </Text>
-          <Text>R$ 15.430,75</Text>
+          <Text>{formatCurrency(dashboardMetrics.balance)}</Text>
         </Box>
         <Box color={green}>
           <Text fontSize='sm' color='gray.600'>
             Receita Hoje
           </Text>
-          <Text>R$ 2.847,50</Text>
+          <Text>{formatCurrency(dashboardMetrics.revenue_today)}</Text>
         </Box>
         <Box color={green}>
           <Text fontSize='sm' color='gray.600'>
             Receita Mês
           </Text>
-          <Text>R$ 45.230,80</Text>
-        </Box>
-        <Box color={red}>
-          <Text fontSize='sm' color='gray.600'>
-            Gastos Hoje
-          </Text>
-          <Text>R$ 1.200,00</Text>
-        </Box>
-        <Box color={blue}>
-          <Text fontSize='sm' color='gray.600'>
-            Lucro Hoje
-          </Text>
-          <Text>R$ 1.647,50</Text>
+          <Text>{formatCurrency(dashboardMetrics.revenue_month)}</Text>
         </Box>
       </Flex>
 
@@ -86,65 +108,31 @@ export const DashboardView = () => {
             Produtos com estoque baixo ou em falta
           </Text>
 
-          {/* Pão de Açúcar */}
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text>Pão de Açúcar</Text>
-              <Badge colorScheme='red'>Em Falta</Badge>
-            </Flex>
+          {lowStockProducts.length === 0 && (
             <Text fontSize='sm' color='gray.500'>
-              Atual: 0 - Mínimo: 5
+              Nenhum produto com estoque baixo ou em falta.
             </Text>
-            <Progress.Root defaultValue={0} maxW='sm'>
-              <HStack gap='5'>
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex='1'>
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
-          </Box>
+          )}
 
-          {/* Leite Integral 1L */}
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text>Leite Integral 1L</Text>
-              <Badge colorScheme='yellow'>Estoque Baixo</Badge>
-            </Flex>
-            <Text fontSize='sm' color='gray.500'>
-              Atual: 3 - Mínimo: 10
-            </Text>
-            <Progress.Root defaultValue={(3 / 10) * 100} maxW='sm'>
-              <HStack gap='5'>
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex='1'>
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
-          </Box>
-
-          {/* Açúcar 1kg */}
-          <Box>
-            <Flex justify='space-between' mb={1}>
-              <Text>Açúcar 1kg</Text>
-              <Badge colorScheme='yellow'>Estoque Baixo</Badge>
-            </Flex>
-            <Text fontSize='sm' color='gray.500'>
-              Atual: 5 - Mínimo: 15
-            </Text>
-            <Progress.Root defaultValue={(5 / 15) * 100} maxW='sm'>
-              <HStack gap='5'>
-                <Progress.Label>Usage</Progress.Label>
-                <Progress.Track flex='1'>
-                  <Progress.Range />
-                </Progress.Track>
-                <Progress.ValueText>40%</Progress.ValueText>
-              </HStack>
-            </Progress.Root>
-          </Box>
+          {lowStockProducts.map((product) => (
+            <Box mb={4}>
+              <Flex justify='space-between' mb={1}>
+                <Text>{product.name}</Text>
+                {product.quantity === 0 ? (
+                  <Badge bg='red.100' color='black'>
+                    Em Falta
+                  </Badge>
+                ) : (
+                  <Badge bg='yellow.100' color='black'>
+                    Estoque Baixo
+                  </Badge>
+                )}
+              </Flex>
+              <Text fontSize='sm' color='gray.500'>
+                Atual: {product.quantity} - Mínimo: 10
+              </Text>
+            </Box>
+          ))}
         </Box>
 
         {/* Top Produtos */}
@@ -163,50 +151,29 @@ export const DashboardView = () => {
             </Text>
           </Flex>
 
-          {/* Produto 1 */}
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text fontWeight='semibold'>Coca-Cola 2L</Text>
-              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
-                #1
-              </Badge>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color='gray.600'>
-              <Text>Vendas: 45</Text>
-              <Text color={green}>Receita: R$ 382,50</Text>
-              <Text>Estoque: 28</Text>
-            </Flex>
-          </Box>
+          {topSellingProducts.length === 0 && (
+            <Text fontSize='sm' color='gray.500'>
+              Nenhum produto vendido no mês.
+            </Text>
+          )}
 
-          {/* Produto 2 */}
-          <Box mb={4}>
-            <Flex justify='space-between' mb={1}>
-              <Text fontWeight='semibold'>Pão Francês</Text>
-              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
-                #2
-              </Badge>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color='gray.600'>
-              <Text>Vendas: 120</Text>
-              <Text color={green}>Receita: R$ 600,00</Text>
-              <Text>Estoque: 0</Text>
-            </Flex>
-          </Box>
-
-          {/* Produto 3 */}
-          <Box>
-            <Flex justify='space-between' mb={1}>
-              <Text fontWeight='semibold'>Leite Integral</Text>
-              <Badge colorScheme='gray' variant='outline' fontSize='xs'>
-                #3
-              </Badge>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color='gray.600'>
-              <Text>Vendas: 32</Text>
-              <Text color={green}>Receita: R$ 185,60</Text>
-              <Text>Estoque: 12</Text>
-            </Flex>
-          </Box>
+          {topSellingProducts.map((product, index) => (
+            <Box mb={4}>
+              <Flex justify='space-between' mb={1}>
+                <Text fontWeight='semibold'>{product.name}</Text>
+                <Badge colorScheme='gray' variant='outline' fontSize='xs'>
+                  #{index + 1}
+                </Badge>
+              </Flex>
+              <Flex justify='space-between' fontSize='sm' color='gray.600'>
+                <Text>Vendas: {product.total_sold}</Text>
+                <Text color={green}>
+                  Receita: {formatCurrency(product.revenue)}
+                </Text>
+                <Text>Estoque: {product.quantity}</Text>
+              </Flex>
+            </Box>
+          ))}
         </Box>
 
         {/* Resumo de Vendas */}
@@ -237,10 +204,7 @@ export const DashboardView = () => {
               <Text>Receita</Text>
               <Text color={green}>R$ 2.847,50</Text>
             </Flex>
-            <Flex justify='space-between' fontSize='sm' color={blue}>
-              <Text>Ticket Médio</Text>
-              <Text>R$ 101,70</Text>
-            </Flex>
+
             {/* <Box height="1px" bg="gray.200" my={3} /> */}
           </Box>
 
@@ -256,10 +220,7 @@ export const DashboardView = () => {
               <Text>Receita</Text>
               <Text color={green}>R$ 2.456,80</Text>
             </Flex>
-            <Flex justify='space-between' fontSize='sm' color={blue}>
-              <Text>Ticket Médio</Text>
-              <Text>R$ 98,27</Text>
-            </Flex>
+
             {/* <Box height="1px" bg="gray.200" my={3} /> */}
           </Box>
 
@@ -274,10 +235,6 @@ export const DashboardView = () => {
             <Flex justify='space-between' fontWeight='semibold' mb={1}>
               <Text>Receita</Text>
               <Text color={green}>R$ 15.890,30</Text>
-            </Flex>
-            <Flex justify='space-between' fontSize='sm' color={blue}>
-              <Text>Ticket Médio</Text>
-              <Text>R$ 101,86</Text>
             </Flex>
           </Box>
         </Box>

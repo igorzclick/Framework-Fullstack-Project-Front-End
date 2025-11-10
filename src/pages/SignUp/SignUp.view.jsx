@@ -16,6 +16,7 @@ import { Link, useNavigate } from 'react-router';
 import { toaster } from '../../components/ui/toaster';
 import { Link as ChakraLink } from '@chakra-ui/react';
 import { registerSeller } from '../../apis/registerSeller';
+import Loading from '../../components/Loading';
 
 export const SignUpView = () => {
   const [formData, setFormData] = useState({
@@ -105,6 +106,10 @@ export const SignUpView = () => {
   const handleCancel = () => {
     navigate(-1);
   };
+
+  if (isLoading) {
+    return <Loading message='Realizando cadastro...' />;
+  }
 
   return (
     <Center w='100%' h='100vh' my='10'>
@@ -220,11 +225,7 @@ export const SignUpView = () => {
           </Card.Body>
 
           <Card.Footer flex flexDirection={'column'} gap='2'>
-            <Button
-              type='submit'
-              width={'100%'}
-              isLoading={isLoading}
-              disabled={isLoading}>
+            <Button type='submit' width={'100%'} disabled={isLoading}>
               Cadastrar
             </Button>
             <Button variant='outline' onClick={handleCancel} width={'100%'}>

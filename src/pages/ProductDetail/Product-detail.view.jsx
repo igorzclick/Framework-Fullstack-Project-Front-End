@@ -170,17 +170,6 @@ export const ProductDetailsView = () => {
               onClick={() => navigate(`/products/edit/${product.id}`)}>
               Editar Produto
             </Button>
-            <Button
-              colorScheme='red'
-              variant='outline'
-              onClick={() => {
-                if (window.confirm('Deseja realmente excluir este produto?')) {
-                  console.log('Excluir produto:', product.id);
-                  // Chamada à API para exclusão aqui
-                }
-              }}>
-              Excluir
-            </Button>
           </Stack>
         </Box>
       </Flex>

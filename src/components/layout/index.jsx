@@ -13,27 +13,30 @@ import {
   Portal,
   CloseButton,
   Drawer,
+  Separator,
 } from '@chakra-ui/react';
 import {
-  AiOutlineAppstore,
   AiOutlineShoppingCart,
-  AiOutlineSetting,
   AiOutlineLogout,
+  AiOutlineProduct,
 } from 'react-icons/ai';
 import { useNavigate } from 'react-router';
 import { Cart } from '../Cart/Cart.view';
+import { useAtomValue } from 'jotai';
+import { cartAtom } from '../../states/cart.states';
+import { TbTableDashed } from 'react-icons/tb';
 
 const navItems = [
-  { label: 'Gerenciamento', icon: AiOutlineAppstore, key: 'dashboard' },
-  { label: 'Produtos', icon: AiOutlineShoppingCart, key: 'products' },
+  { label: 'Gerenciamento', icon: TbTableDashed, key: 'dashboard' },
+  { label: 'Produtos', icon: AiOutlineProduct, key: 'products' },
   { label: 'Vendas', icon: AiOutlineShoppingCart, key: 'sales' },
 ];
-
 export const Layout = ({ activeKey = 'dashboard', children }) => {
   const bg = useColorModeValue('white', 'gray.900');
   const activeBg = useColorModeValue('blue.100', 'blue.700');
   const activeColor = useColorModeValue('blue.600', 'blue.300');
   const navigate = useNavigate();
+  const cartItems = useAtomValue(cartAtom);
 
   const [open, setOpen] = useState(false);
 
@@ -59,10 +62,7 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
         flexDirection='column'
         justifyContent='space-between'>
         {/* Logo */}
-        <Box
-          my={6}
-          borderBottom='1px solid'
-          borderColor={useColorModeValue('gray.200', 'gray.700')}>
+        <Box my={6}>
           <HStack spacing={3}>
             <Box
               w={8}
@@ -78,6 +78,8 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
             <Text>StockPro</Text>
           </HStack>
         </Box>
+
+        <Separator />
 
         {/* Navegação */}
         <VStack spacing={4} align='stretch' flex='1'>
@@ -113,7 +115,7 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
               colorScheme='blue'
               size='md'
               mb={4}>
-              Ver Carrinho
+              Ver Carrinho {cartItems.length}
             </Button>
           </Drawer.Trigger>
 
@@ -146,12 +148,6 @@ export const Layout = ({ activeKey = 'dashboard', children }) => {
 
         {/* Área do Usuário */}
         <Box>
-          <Text fontSize='sm' color='gray.600' mb={1}>
-            Mercado São José
-          </Text>
-          <Text fontSize='xs' color='gray.500' mb={3}>
-            mercado@email.com
-          </Text>
           <Button
             leftIcon={<AiOutlineLogout />}
             size='sm'

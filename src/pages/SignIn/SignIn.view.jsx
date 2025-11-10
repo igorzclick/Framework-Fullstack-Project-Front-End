@@ -15,6 +15,7 @@ import { loginSeller, isAuthenticated } from '../../apis/login';
 import { Link, useNavigate } from 'react-router';
 import { toaster } from '../../components/ui/toaster';
 import logo from '../../assets/logo_editada.png';
+import Loading from '../../components/Loading';
 
 export const SignInView = () => {
   const [formData, setFormData] = useState({
@@ -66,6 +67,10 @@ export const SignInView = () => {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Loading message='Realizando login...' />;
+  }
 
   return (
     <Box
@@ -138,10 +143,8 @@ export const SignInView = () => {
 
             <Button
               type='submit'
-              // as={Link}
-              // to='/dashboard'
               colorScheme='blue'
-              isLoading={isLoading}
+              disabled={isLoading}
               size='lg'
               fontWeight='bold'
               borderRadius='md'>

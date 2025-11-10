@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Box,
@@ -6,97 +6,81 @@ import {
   Text,
   Heading,
   Button,
-  Badge,
   Input,
   Stack,
   HStack,
   IconButton,
+  Table,
+  InputGroup,
+  Dialog,
 } from '@chakra-ui/react';
-import { FiPlus, FiSearch, FiEdit, FiTrash2, FiEye } from 'react-icons/fi';
+import { FiSearch, FiTrash2 } from 'react-icons/fi';
+import { deleteSale, getSales } from '../../apis/sale';
+import { parseISO, format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { toaster } from '../../components/ui/toaster';
 
 export const SalesView = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [sales, setSales] = useState([]);
 
-  // Dados mockados - substituir por chamada à API
-  const sales = [
-    {
-      id: 'VEN-001',
-      date: '2024-01-15',
-      customer: 'João Silva',
-      total: 245.8,
-      status: 'concluída',
-      items: 8,
-    },
-    {
-      id: 'VEN-002',
-      date: '2024-01-15',
-      customer: 'Maria Santos',
-      total: 189.5,
-      status: 'concluída',
-      items: 5,
-    },
-    {
-      id: 'VEN-003',
-      date: '2024-01-14',
-      customer: 'Pedro Costa',
-      total: 320.0,
-      status: 'concluída',
-      items: 12,
-    },
-    {
-      id: 'VEN-004',
-      date: '2024-01-14',
-      customer: 'Ana Oliveira',
-      total: 156.3,
-      status: 'cancelada',
-      items: 4,
-    },
-    {
-      id: 'VEN-005',
-      date: '2024-01-13',
-      customer: 'Carlos Souza',
-      total: 478.9,
-      status: 'concluída',
-      items: 15,
-    },
-  ];
+  const [openDelete, setOpenDelete] = useState(false);
+  const [selectedSale, setSelectedSale] = useState(null);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
-  const filteredSales = sales.filter(
-    (sale) =>
-      sale.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sale.customer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    getSales().then((data) => setSales(data.sales));
+  }, []);
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('pt-BR', {
+  const filteredSales = searchTerm
+    ? sales.filter(
+        (sale) =>
+          sale.id === parseInt(searchTerm) ||
+          sale.product_id === parseInt(searchTerm)
+      )
+    : sales;
+
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(value);
-  };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    const date = parseISO(dateString);
+    return format(date, 'dd/MM/yyyy HH:mm', { locale: ptBR });
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'concluída':
-        return 'green';
-      case 'cancelada':
-        return 'red';
-      case 'pendente':
-        return 'yellow';
-      default:
-        return 'gray';
+  const handleConfirmDelete = () => {
+    if (selectedSale) {
+      setLoadingDelete(true);
+      deleteSale(selectedSale.id)
+        .then(() => {
+          toaster.success({
+            title: 'Venda excluída',
+            description: `Venda ${selectedSale.id} foi removida com sucesso.`,
+          });
+          setSales((prev) => prev.filter((s) => s.id !== selectedSale.id));
+          setOpenDelete(false);
+          setSelectedSale(null);
+        })
+        .catch((err) => {
+          toaster.error({
+            title: 'Erro ao excluir venda',
+            description:
+              err?.response?.data?.message || 'Tente novamente mais tarde',
+          });
+        })
+        .finally(() => {
+          setLoadingDelete(false);
+        });
     }
   };
 
-  const totalSales = sales.reduce((sum, sale) => sum + sale.total, 0);
-  const completedSales = sales.filter((s) => s.status === 'concluída').length;
+  const totalSales = sales.reduce((sum, sale) => sum + (sale.price || 0), 0);
 
   return (
-    <Box p={6} bg='white' rounded='md' shadow='md' minH='100vh'>
+    <Box p={6} bg='white' rounded='md' shadow='md'>
       {/* Header */}
       <Flex justify='space-between' align='center' mb={6}>
         <Box>
@@ -119,26 +103,13 @@ export const SalesView = () => {
           p={4}
           bg='blue.50'>
           <Text fontSize='sm' color='gray.600' mb={1}>
-            Total de Vendas
+            Total em Vendas
           </Text>
           <Text fontSize='2xl' fontWeight='bold' color='blue.600'>
             {formatCurrency(totalSales)}
           </Text>
         </Box>
-        <Box
-          flex='1'
-          minW='200px'
-          borderWidth='1px'
-          borderRadius='md'
-          p={4}
-          bg='green.50'>
-          <Text fontSize='sm' color='gray.600' mb={1}>
-            Vendas Concluídas
-          </Text>
-          <Text fontSize='2xl' fontWeight='bold' color='green.600'>
-            {completedSales}
-          </Text>
-        </Box>
+
         <Box
           flex='1'
           minW='200px'
@@ -147,7 +118,7 @@ export const SalesView = () => {
           p={4}
           bg='purple.50'>
           <Text fontSize='sm' color='gray.600' mb={1}>
-            Total de Vendas
+            Quantidade de Vendas
           </Text>
           <Text fontSize='2xl' fontWeight='bold' color='purple.600'>
             {sales.length}
@@ -156,121 +127,125 @@ export const SalesView = () => {
       </Flex>
 
       {/* Filtros e Busca */}
-      <Flex justify='space-between' align='center' mb={4} wrap='wrap' gap={4}>
-        <HStack spacing={2} maxW='400px' flex='1'>
-          <Box color='gray.500'>
-            <FiSearch />
-          </Box>
+      <HStack spacing={2} maxW='400px' flex='1'>
+        <InputGroup startElement={<FiSearch />}>
           <Input
-            placeholder='Buscar por ID ou cliente...'
+            placeholder='Buscar por ID da venda ou ID do produto'
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             flex='1'
           />
-        </HStack>
-        <HStack spacing={2}>
-          <Button size='sm' variant='outline'>
-            Hoje
-          </Button>
-          <Button size='sm' variant='outline'>
-            Esta Semana
-          </Button>
-          <Button size='sm' variant='outline'>
-            Este Mês
-          </Button>
-        </HStack>
-      </Flex>
+        </InputGroup>
+      </HStack>
 
-      {/* Cabeçalho da Tabela */}
-      <Box borderWidth='1px' borderRadius='md' overflow='hidden' mb={4}>
-        <Flex
-          bg='gray.50'
-          p={4}
-          borderBottomWidth='1px'
-          fontWeight='semibold'
-          fontSize='sm'
-          color='gray.700'>
-          <Box flex='1'>ID</Box>
-          <Box flex='1'>Data</Box>
-          <Box flex='2'>Cliente</Box>
-          <Box flex='1' textAlign='center'>
-            Itens
-          </Box>
-          <Box flex='1' textAlign='right'>
-            Total
-          </Box>
-          <Box flex='1' textAlign='center'>
-            Status
-          </Box>
-          <Box flex='1' textAlign='center'>
-            Ações
-          </Box>
-        </Flex>
+      {/* Tabela de Vendas */}
+      <Box overflow='hidden'>
+        <Table.Root
+          size='md'
+          borderWidth='1px'
+          borderRadius='md'
+          overflow='hidden'>
+          <Table.Header bg='gray.50'>
+            <Table.Row>
+              <Table.ColumnHeader>ID</Table.ColumnHeader>
+              <Table.ColumnHeader>Data</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign='left'>
+                ID do Produto
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign='left'>
+                Quantidade
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign='left'>Total</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign='center'>
+                Deletar
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
 
-        {/* Lista de Vendas */}
-        {filteredSales.length === 0 ? (
-          <Box p={8} textAlign='center'>
-            <Text color='gray.500'>Nenhuma venda encontrada</Text>
-          </Box>
-        ) : (
-          <Stack spacing={0} divider={<Box borderTopWidth='1px' />}>
-            {filteredSales.map((sale) => (
-              <Flex
-                key={sale.id}
-                p={4}
-                align='center'
-                _hover={{ bg: 'gray.50' }}
-                transition='background 0.2s'>
-                <Box flex='1' fontWeight='semibold'>
-                  {sale.id}
-                </Box>
-                <Box flex='1'>{formatDate(sale.date)}</Box>
-                <Box flex='2'>{sale.customer}</Box>
-                <Box flex='1' textAlign='center'>
-                  {sale.items}
-                </Box>
-                <Box
-                  flex='1'
-                  textAlign='right'
-                  fontWeight='semibold'
-                  color='green.600'>
-                  {formatCurrency(sale.total)}
-                </Box>
-                <Box flex='1' textAlign='center'>
-                  <Badge colorScheme={getStatusColor(sale.status)}>
-                    {sale.status}
-                  </Badge>
-                </Box>
-                <Box flex='1' textAlign='center'>
-                  <HStack spacing={2} justify='center'>
+          <Table.Body>
+            {filteredSales.length === 0 ? (
+              <Table.Row>
+                <Table.Cell colSpan={6} textAlign='center' py={6}>
+                  <Text color='gray.500'>Nenhuma venda encontrada</Text>
+                </Table.Cell>
+              </Table.Row>
+            ) : (
+              filteredSales.map((sale) => (
+                <Table.Row key={sale.id} _hover={{ bg: 'gray.50' }}>
+                  <Table.Cell fontWeight='semibold'>{sale.id}</Table.Cell>
+                  <Table.Cell>{formatDate(sale.created_at)}</Table.Cell>
+                  <Table.Cell textAlign='left'>{sale.product_id}</Table.Cell>
+                  <Table.Cell textAlign='left'>{sale.quantity}</Table.Cell>
+                  <Table.Cell
+                    textAlign='left'
+                    color='green.600'
+                    fontWeight='semibold'>
+                    {formatCurrency(sale.price)}
+                  </Table.Cell>
+                  <Table.Cell textAlign='center'>
                     <IconButton
                       size='sm'
                       variant='ghost'
-                      icon={<FiEye />}
-                      aria-label='Ver detalhes'
-                      onClick={() => navigate(`/sales/${sale.id}`)}
-                    />
-                    <IconButton
-                      size='sm'
-                      variant='ghost'
-                      icon={<FiEdit />}
-                      aria-label='Editar'
-                      colorScheme='blue'
-                    />
-                    <IconButton
-                      size='sm'
-                      variant='ghost'
-                      icon={<FiTrash2 />}
                       aria-label='Excluir'
-                      colorScheme='red'
-                    />
-                  </HStack>
-                </Box>
-              </Flex>
-            ))}
-          </Stack>
-        )}
+                      color='red'
+                      onClick={() => {
+                        setSelectedSale(sale);
+                        setOpenDelete(true);
+                      }}>
+                      <FiTrash2 />
+                    </IconButton>
+                  </Table.Cell>
+                </Table.Row>
+              ))
+            )}
+          </Table.Body>
+
+          <Table.Footer>
+            <Table.Row>
+              <Table.Cell colSpan={8}>
+                <Text fontSize='sm' color='gray.500' textAlign='right'>
+                  Total de vendas exibidas: {filteredSales.length}
+                </Text>
+              </Table.Cell>
+            </Table.Row>
+          </Table.Footer>
+        </Table.Root>
       </Box>
+
+      {/* Modal de confirmação de exclusão */}
+      <Dialog.Root
+        open={openDelete}
+        onOpenChange={(e) => setOpenDelete(e.open)}>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Confirmar exclusão</Dialog.Title>
+            </Dialog.Header>
+
+            <Dialog.Body>
+              <Dialog.Description>
+                Tem certeza que deseja excluir a venda{' '}
+                <strong>ID {selectedSale?.id}</strong>?
+                <br />
+                Esta ação não poderá ser desfeita.
+              </Dialog.Description>
+            </Dialog.Body>
+
+            <Dialog.Footer>
+              <Button variant='outline' onClick={() => setOpenDelete(false)}>
+                Cancelar
+              </Button>
+              <Button
+                bg={'red.600'}
+                onClick={handleConfirmDelete}
+                disabled={loadingDelete}>
+                Excluir
+              </Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Dialog.Root>
     </Box>
   );
 };
