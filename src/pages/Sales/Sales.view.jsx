@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
 import {
   Box,
   Flex,
@@ -48,7 +47,8 @@ export const SalesView = () => {
 
   const formatDate = (dateString) => {
     const date = parseISO(dateString);
-    return format(date, 'dd/MM/yyyy HH:mm', { locale: ptBR });
+    const threeHoursBefore = new Date(date.getTime() - 3 * 60 * 60 * 1000);
+    return format(threeHoursBefore, 'dd/MM/yyyy HH:mm', { locale: ptBR });
   };
 
   const handleConfirmDelete = () => {
